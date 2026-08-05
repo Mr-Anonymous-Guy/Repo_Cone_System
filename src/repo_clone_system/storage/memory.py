@@ -9,11 +9,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 STORAGE_DIR = BASE_DIR / "storage"
 MEMORY_FILE = STORAGE_DIR / "memory.json"
 
-DEFAULT_MEMORY = {
-    "last_location": "",
-    "locations": [],
-    "repositories": []
-}
+DEFAULT_MEMORY = {"last_location": "", "locations": [], "repositories": []}
 
 
 def load_memory():
@@ -44,11 +40,7 @@ def reset_memory():
     """Reset memory dict to DEFAULT_MEMORY and overwrite memory.json."""
     global memory
     memory.clear()
-    memory.update({
-        "last_location": "",
-        "locations": [],
-        "repositories": []
-    })
+    memory.update({"last_location": "", "locations": [], "repositories": []})
     save_memory(memory)
 
 

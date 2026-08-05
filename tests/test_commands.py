@@ -2,7 +2,16 @@ from repo_clone_system.ui.commands import COMMAND_MAP, dispatch_command
 
 
 def test_command_map_keys():
-    expected_commands = {"clone", "repos", "locations", "stats", "help", "clear", "update", "exit"}
+    expected_commands = {
+        "clone",
+        "repos",
+        "locations",
+        "stats",
+        "help",
+        "clear",
+        "update",
+        "exit",
+    }
     assert expected_commands.issubset(set(COMMAND_MAP.keys()))
 
 

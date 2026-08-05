@@ -1,4 +1,4 @@
-from repo_clone_system.storage.memory import DEFAULT_MEMORY, load_memory, save_memory, reset_memory
+from repo_clone_system.storage.memory import DEFAULT_MEMORY, load_memory, reset_memory
 
 
 def test_default_memory_structure():

@@ -30,3 +30,6 @@ env/
 
 # Antigravity artifacts
 .gemini/
+
+# CI Guardian (generated)
+ci_report.md

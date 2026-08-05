@@ -3,11 +3,7 @@ import subprocess
 
 def check_git():
     try:
-        subprocess.run(
-            ["git", "--version"],
-            capture_output=True,
-            check=True
-        )
+        subprocess.run(["git", "--version"], capture_output=True, check=True)
         return True
 
     except Exception:

@@ -8,15 +8,11 @@ from repo_clone_system.storage.memory import memory
 
 def choose_destination():
 
-    choices = [
-        Choice(title="➕ New Location", value="__NEW_LOCATION__")
-    ]
+    choices = [Choice(title="➕ New Location", value="__NEW_LOCATION__")]
 
     last = memory.get("last_location", "")
     if last:
-        choices.append(
-            Choice(title=f"  🕒 Last Used\n    {last}", value=last)
-        )
+        choices.append(Choice(title=f"  🕒 Last Used\n    {last}", value=last))
 
     # Ensure duplicate locations never appear
     saved_locations = []
@@ -30,9 +26,7 @@ def choose_destination():
             choices.append(Choice(title=f"  {loc}", value=loc))
 
     selected = questionary.select(
-        "\nChoose Clone Destination",
-        choices=choices,
-        use_indicator=True
+        "\nChoose Clone Destination", choices=choices, use_indicator=True
     ).ask()
 
     if selected is None:

@@ -9,15 +9,10 @@ def clone_repository(repo_url, destination, folder_name):
     print("\nCloning repository...\n")
 
     result = subprocess.run(
-        [
-            "git",
-            "clone",
-            repo_url,
-            folder_name
-        ],
+        ["git", "clone", repo_url, folder_name],
         cwd=destination,
         capture_output=True,
-        text=True
+        text=True,
     )
 
     if result.returncode != 0:

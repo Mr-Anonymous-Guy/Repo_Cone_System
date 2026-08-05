@@ -15,7 +15,7 @@ COMMAND_CHOICES = [
     Choice(title="Statistics", value="stats"),
     Choice(title="Help", value="help"),
     Choice(title="Clear History", value="clear"),
-    Choice(title="Exit", value="exit")
+    Choice(title="Exit", value="exit"),
 ]
 
 
@@ -31,7 +31,7 @@ def show_command_palette():
             use_jk_keys=False,
             use_indicator=True,
             qmark=">",
-            pointer="❯"
+            pointer="❯",
         ).ask()
 
         if selected is None:
