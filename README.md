@@ -16,7 +16,7 @@
 
 ```text
 ╭──────────────────────────────────────────────────────────────╮
-│ Repo_Clone_System v2.0.0                                     │
+│ Repo_Clone_System v0.2.0                                     │
 │ Press ↑ ↓ to navigate • Enter to select • Esc to cancel      │
 ╰──────────────────────────────────────────────────────────────╯
 
@@ -255,13 +255,13 @@ Repo_Clone_System/
 - [x] VS Code-style Command Palette with live prefix filtering
 - [x] CLI Subcommands (`repo clone`, `repo repos`, `repo stats`, etc.)
 - [x] Global interruption handling (Ctrl+C / Ctrl+D)
-- [x] Workspace Management Subsystem & Multi-Profile Workspaces (`v2.0.0`)
-- [x] Workspace Sync Manager & Pluggable Provider Architecture (`v2.0.0`)
-- [x] Automatic Exit Incremental Backups & 20-Backup Rotation (`v2.0.0`)
-- [x] Workspace Aliases & Location Manager (`v2.0.0`)
-- [x] Portable Import / Export Backup System (`v2.0.0`)
-- [x] System Doctor & Diagnostic Suite (`v2.0.0`)
-- [x] Repository Fuzzy Search & Reachability Verification (`v2.0.0`)
+- [x] Workspace Management Subsystem & Multi-Profile Workspaces (`v0.2.0`)
+- [x] Workspace Sync Manager & Pluggable Provider Architecture (`v0.2.0`)
+- [x] Automatic Exit Incremental Backups & 20-Backup Rotation (`v0.2.0`)
+- [x] Workspace Aliases & Location Manager (`v0.2.0`)
+- [x] Portable Import / Export Backup System (`v0.2.0`)
+- [x] System Doctor & Diagnostic Suite (`v0.2.0`)
+- [x] Repository Fuzzy Search & Reachability Verification (`v0.2.0`)
 - [ ] SSH & Private Repository authentication helper
 - [ ] GitHub CLI (`gh`) integration for automatic fork-and-clone
 
