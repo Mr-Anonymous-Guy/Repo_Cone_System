@@ -16,12 +16,12 @@
 
 ```text
 ╭──────────────────────────────────────────────────────────────╮
-│ Repo_Clone_System v2.0.0                                     │
+│ Repo_Clone_System v0.3.0                                     │
 │ Type "help" to list commands or enter a GitHub URL.          │
 │ Press Ctrl+C anytime to exit safely.                         │
 ╰──────────────────────────────────────────────────────────────╯
 
->
+> 
 ```
 
 *Shell-first Git-style hybrid CLI with prompt history, tab completion, direct GitHub URL auto-dispatch, and contextual sub-menus.*
@@ -30,12 +30,15 @@
 
 ## ✨ Features
 
+- 🖥️ **Git-Style Hybrid CLI Shell (`repo`)**: Shell-first startup with clean header banner, persistent prompt session, command history (`.repo_history`), and `WordCompleter` auto-completion.
+- ⚡ **Direct Git/GitHub URL Gate**: Directly typing any GitHub URL (`https://github.com/...`, `git@github.com:...`) auto-detects and triggers `clone_repository()` immediately.
 - 💼 **Workspace Management Subsystem (`repo workspace`)**: Complete workspace isolation (`Default`, `College`, `Office`, `Laptop`, `Personal`, custom) with independent repositories, locations, aliases, settings, and statistics.
 - 💼 **Multi-Profile Workspace Management**: Switch profiles instantly (`repo workspace switch <name>`) with zero-restart hot-reloading.
 - 🔄 **Sync Manager & Directory Synchronization**: Configure default sync directories (`repo workspace sync config <path>`) supporting local folders, mapped drives, OneDrive, Dropbox, Google Drive, and custom directories.
+- 📁 **Dedicated Workspace Backups Directory (`workspace-backups/`)**: All manual and auto exports default to `workspace-backups/`, excluded from Git commits via `.gitignore`.
 - 🔄 **Incremental Exit Backups & 20-Backup Rotation**: Automatically captures incremental backups on CLI exit if workspace changes are detected, keeping the 20 newest auto-backups while preserving manual exports indefinitely.
 - 💻 **Global Terminal Executable (`repo`)**: Run `repo` from any directory in your shell.
-- ⚡ **CLI Subcommands**: Execute direct actions like `repo workspace`, `repo clone`, `repo repos`, `repo locations`, `repo alias`, `repo export`, `repo import`, `repo backups`, `repo config`, `repo doctor`, `repo memory`, `repo stats`, `repo update`.
+- ⚡ **CLI Subcommands**: Execute direct actions like `repo workspace`, `repo clone`, `repo repos`, `repo locations`, `repo alias`, `repo export`, `repo import`, `repo backups`, `repo config`, `repo doctor`, `repo memory`, `repo stats`, `repo update`, `repo clear`.
 - 🎨 **VS Code–Style Command Palette**: Interactive palette with real-time prefix filtering and arrow key selection.
 - 📤 **Portable Export / Import**: Easily transfer complete workspace configuration between computers (`repo export` / `repo import`).
 - 🔀 **Smart Merge & Replace Import Modes**:

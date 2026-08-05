@@ -1,4 +1,4 @@
-# Repo_Clone_System Documentation (v0.2.0)
+# Repo_Clone_System Documentation (v0.3.0)
 
 Welcome to the official developer documentation for `Repo_Clone_System`.
 
@@ -6,6 +6,7 @@ Welcome to the official developer documentation for `Repo_Clone_System`.
 
 `Repo_Clone_System` follows a clean modular layout (`src/` layout):
 
+- **`src/repo_clone_system/cli.py`**: Shell-first prompt session engine using `prompt_toolkit` with persistent history (`.repo_history`) and auto-completion.
 - **`src/repo_clone_system/core/`**: Core logic for Git execution, path validation, and global interruption handling.
 - **`src/repo_clone_system/services/`**: Business logic services:
   - `workspace_service.py`: Central Workspace Manager, exports, metrics (`repo workspace info`).
@@ -20,8 +21,9 @@ Welcome to the official developer documentation for `Repo_Clone_System`.
   - `doctor_service.py`: System diagnostic health suite (`repo doctor`).
   - `update_service.py`: PyPI update checker.
 - **`src/repo_clone_system/storage/`**: OS-dependent state management & JSON memory persistence (`memory.json`).
-- **`src/repo_clone_system/ui/`**: Interactive Command Palette, prompt handlers, workspace UI menus, and formatted console banners.
-- **`tests/`**: Unit test suite powered by Pytest (42 tests).
+- **`src/repo_clone_system/ui/`**: Command router (`commands.py`), prompt handlers, workspace UI menus, and formatted console banners.
+- **`workspace-backups/`**: Dedicated local backup export folder, isolated and excluded from Git commits via `.gitignore`.
+- **`tests/`**: Unit test suite powered by Pytest (43 tests).
 
 ## Available Subcommands
 
