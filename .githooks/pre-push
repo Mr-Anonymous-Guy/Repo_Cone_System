@@ -16,7 +16,7 @@ EXIT_CODE=$?
 
 if [ $EXIT_CODE -ne 0 ]; then
     echo ""
-    echo "\033[91m✗ PUSH BLOCKED — Validation failed.\033[0m"
+    echo "✗ PUSH BLOCKED — Validation failed."
     echo "  Fix the issues above and try again."
     echo "  Emergency bypass: git push --no-verify"
     echo ""

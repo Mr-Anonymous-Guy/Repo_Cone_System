@@ -42,7 +42,7 @@ EXIT_CODE=$?
 
 if [ $EXIT_CODE -ne 0 ]; then
     echo ""
-    echo "\\033[91m✗ PUSH BLOCKED — Validation failed.\\033[0m"
+    echo "✗ PUSH BLOCKED — Validation failed."
     echo "  Fix the issues above and try again."
     echo "  Emergency bypass: git push --no-verify"
     echo ""
@@ -91,7 +91,7 @@ def install():
     # Backup existing hook
     if hook_path.exists():
         backup = hook_path.with_suffix(".backup")
-        hook_path.rename(backup)
+        hook_path.replace(backup)
         print(f"  Backed up existing hook to: {backup.name}")
 
     # Write hook (use Unix script — Git for Windows uses sh)

@@ -1836,6 +1836,11 @@ Examples:
         default="origin",
         help="Git remote name (default: origin)",
     )
+    parser.add_argument(
+        "git_args",
+        nargs="*",
+        help="Positional arguments passed by Git pre-push hook",
+    )
 
     args = parser.parse_args()
 
