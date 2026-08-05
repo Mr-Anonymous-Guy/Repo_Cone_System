@@ -1,5 +1,4 @@
 import os
-import json
 import subprocess
 import sys
 import webbrowser
@@ -11,7 +10,6 @@ from questionary import Choice
 
 from repo_clone_system import __version__
 from repo_clone_system.core.clone import clone_repository
-from repo_clone_system.ui.menu import choose_destination
 from repo_clone_system.core.utils import get_repo_name
 from repo_clone_system.services.alias_service import (
     add_alias,
@@ -84,7 +82,6 @@ from repo_clone_system.ui.workspace_ui import (
     show_clear_palette,
     show_clone_palette,
     show_export_palette,
-    show_help_palette,
     show_import_palette,
     show_locations_palette,
     show_memory_palette,
@@ -121,11 +118,7 @@ def _handle_clone_action(action: str):
         except Exception:
             selected = None
         if selected:
-            url = (
-                selected.get("url", "")
-                if isinstance(selected, dict)
-                else selected
-            )
+            url = selected.get("url", "") if isinstance(selected, dict) else selected
             clone_repository(url)
     elif action == "alias":
         aliases = list_aliases()
@@ -134,14 +127,11 @@ def _handle_clone_action(action: str):
             print("Add one using: repo alias add <name> <folder_path>")
             return
         choices = [
-            Choice(f"{name} ({path})", value=path)
-            for name, path in aliases.items()
+            Choice(f"{name} ({path})", value=path) for name, path in aliases.items()
         ]
         choices.append(Choice("Cancel", value=None))
         try:
-            dest = questionary.select(
-                "Select alias destination", choices=choices
-            ).ask()
+            dest = questionary.select("Select alias destination", choices=choices).ask()
         except Exception:
             dest = None
         if dest:
@@ -168,11 +158,7 @@ def _handle_clone_action(action: str):
         except Exception:
             selected = None
         if selected:
-            url = (
-                selected.get("url", "")
-                if isinstance(selected, dict)
-                else selected
-            )
+            url = selected.get("url", "") if isinstance(selected, dict) else selected
             clone_repository(url)
 
 
@@ -249,7 +235,11 @@ def command_repos(args: List[str] = None):
                 except Exception:
                     repo_url = input("\nRepository URL: ").strip()
 
-                if not repo_url or repo_url.strip().lower() in ("exit", "quit", "cancel"):
+                if not repo_url or repo_url.strip().lower() in (
+                    "exit",
+                    "quit",
+                    "cancel",
+                ):
                     print("Exited Add Repository loop.")
                     break
 
@@ -261,9 +251,7 @@ def command_repos(args: List[str] = None):
                     dest_path = input("Destination path (optional): ").strip()
 
                 dest_path = (
-                    dest_path.strip()
-                    if dest_path and dest_path.strip()
-                    else None
+                    dest_path.strip() if dest_path and dest_path.strip() else None
                 )
                 ok, msg = add_repo(repo_url.strip(), dest_path)
                 print(f"\n{msg}\n")
@@ -418,7 +406,11 @@ def command_locations(args: List[str] = None):
                 except Exception:
                     path_str = input("\nLocation folder path: ").strip()
 
-                if not path_str or path_str.strip().lower() in ("exit", "quit", "cancel"):
+                if not path_str or path_str.strip().lower() in (
+                    "exit",
+                    "quit",
+                    "cancel",
+                ):
                     print("Exited Add Location loop.")
                     break
 
@@ -521,9 +513,7 @@ def command_locations(args: List[str] = None):
         if selected:
             p = Path(selected)
             if not p.exists():
-                print(
-                    f"\nCannot open: Folder '{selected}' does not exist on disk."
-                )
+                print(f"\nCannot open: Folder '{selected}' does not exist on disk.")
                 return
             try:
                 if sys.platform == "win32":
@@ -597,8 +587,7 @@ def command_alias(args: List[str] = None):
             return
 
         choices = [
-            Choice(f"{name} ({path})", value=name)
-            for name, path in aliases.items()
+            Choice(f"{name} ({path})", value=name) for name, path in aliases.items()
         ]
         choices.append(Choice("Cancel", value=None))
 
@@ -625,8 +614,7 @@ def command_alias(args: List[str] = None):
                 print("\nNo workspace aliases to rename.")
                 return
             choices = [
-                Choice(f"{name} ({path})", value=name)
-                for name, path in aliases.items()
+                Choice(f"{name} ({path})", value=name) for name, path in aliases.items()
             ]
             choices.append(Choice("Cancel", value=None))
             try:
@@ -639,9 +627,7 @@ def command_alias(args: List[str] = None):
                 print("\nRename cancelled.")
                 return
             try:
-                new_name = questionary.text(
-                    f"New alias name for '{old_name}':"
-                ).ask()
+                new_name = questionary.text(f"New alias name for '{old_name}':").ask()
             except Exception:
                 new_name = input(f"New alias name for '{old_name}': ").strip()
             if not new_name or not new_name.strip():
@@ -658,14 +644,11 @@ def command_alias(args: List[str] = None):
             print("\nNo workspace aliases configured.")
             return
         choices = [
-            Choice(f"{name} ({path})", value=name)
-            for name, path in aliases.items()
+            Choice(f"{name} ({path})", value=name) for name, path in aliases.items()
         ]
         choices.append(Choice("Cancel", value=None))
         try:
-            selected = questionary.select(
-                "Select alias to test", choices=choices
-            ).ask()
+            selected = questionary.select("Select alias to test", choices=choices).ask()
         except Exception:
             selected = None
 
@@ -829,9 +812,8 @@ def command_export(args: List[str] = None):
         aliases = list_aliases()
         ok, msg, metadata = create_export()
         if ok:
-            print(
-                f"\n✓ Exported {len(aliases)} workspace aliases to '{metadata.get('path')}'."
-            )
+            p_path = metadata.get("path", "")
+            print(f"\n✓ Exported {len(aliases)} workspace aliases to '{p_path}'.")
         else:
             print(f"\n{msg}")
         return
@@ -1005,9 +987,7 @@ def command_backups(args: List[str] = None):
         return
 
     if sub in ("remove", "delete", "rm"):
-        choices = [
-            Choice(f"{b.name} ({b.stat().st_size} B)", value=b) for b in backups
-        ]
+        choices = [Choice(f"{b.name} ({b.stat().st_size} B)", value=b) for b in backups]
         choices.append(Choice("Cancel", value=None))
 
         try:
@@ -1022,13 +1002,9 @@ def command_backups(args: List[str] = None):
             return
 
         try:
-            confirm_del = questionary.confirm(
-                f"Delete backup '{selected.name}'?"
-            ).ask()
+            confirm_del = questionary.confirm(f"Delete backup '{selected.name}'?").ask()
         except Exception:
-            choice = input(
-                f"Delete backup '{selected.name}'? (Y/N): "
-            ).strip().lower()
+            choice = input(f"Delete backup '{selected.name}'? (Y/N): ").strip().lower()
             confirm_del = choice in ("y", "yes")
 
         if confirm_del:
@@ -1243,9 +1219,7 @@ def command_workspace_profile(args: List[str] = None):
                 print("\nRename cancelled.")
                 return
             try:
-                new_name = questionary.text(
-                    f"New profile name for '{old_name}':"
-                ).ask()
+                new_name = questionary.text(f"New profile name for '{old_name}':").ask()
             except Exception:
                 new_name = input(f"New profile name for '{old_name}': ").strip()
             if not new_name or not new_name.strip():
@@ -1258,9 +1232,7 @@ def command_workspace_profile(args: List[str] = None):
 
     elif sub in ("remove", "delete", "rm"):
         if not sub_args:
-            profiles = [
-                p for p in list_profiles() if p.lower() != "default"
-            ]
+            profiles = [p for p in list_profiles() if p.lower() != "default"]
             choices = [Choice(p, value=p) for p in profiles]
             try:
                 target = questionary.select(
@@ -1368,7 +1340,10 @@ def command_config(args: List[str] = None):
             try:
                 confirm = questionary.confirm("Reset configuration to default?").ask()
             except Exception:
-                confirm = input("Reset configuration? (Y/N): ").strip().lower() in ("y", "yes")
+                confirm = input("Reset configuration? (Y/N): ").strip().lower() in (
+                    "y",
+                    "yes",
+                )
             if confirm:
                 reset_memory()
                 print("\n✓ Configuration reset to default.")
@@ -1407,7 +1382,8 @@ def command_doctor(args: List[str] = None):
 
     if filter_domain:
         results = [
-            r for r in results
+            r
+            for r in results
             if filter_domain in r.label.lower() or filter_domain in r.details.lower()
         ]
 
@@ -1436,9 +1412,7 @@ def command_doctor(args: List[str] = None):
     if passed_all:
         print("\nAll system diagnostics passed cleanly!")
     else:
-        print(
-            "\nSome issues were detected. Please review recommendations above."
-        )
+        print("\nSome issues were detected. Please review recommendations above.")
 
 
 def command_stats(args: List[str] = None):
@@ -1460,8 +1434,8 @@ def command_stats(args: List[str] = None):
             print(f"  • {name}")
     elif sub in ("locations", "locs"):
         print(f"Total Locations Saved    : {len(locations)}")
-        for l in locations[:10]:
-            print(f"  • {l}")
+        for loc in locations[:10]:
+            print(f"  • {loc}")
     elif sub in ("workspaces", "profiles"):
         print(f"Total Workspaces         : {len(workspaces)}")
         for w in workspaces:
@@ -1480,7 +1454,17 @@ def command_stats(args: List[str] = None):
 
 def command_help(args: List[str] = None):
     """Displays commands reference and help options ('repo help')."""
-    if args and args[0].lower() in ("clone", "workspace", "repos", "locations", "alias", "config", "doctor", "memory", "backups"):
+    if args and args[0].lower() in (
+        "clone",
+        "workspace",
+        "repos",
+        "locations",
+        "alias",
+        "config",
+        "doctor",
+        "memory",
+        "backups",
+    ):
         sub = args[0].lower()
         print(f"\nCommand Help: '{sub}'")
         print("-" * 55)
@@ -1488,8 +1472,14 @@ def command_help(args: List[str] = None):
             print("Usage: repo clone [<url>|--saved|--recent|--alias|--quick]")
             print("Clones a Git repository into a managed destination folder.")
         elif sub == "workspace":
-            print("Usage: repo workspace [create|switch|rename|remove|list|info|export|import|backup|sync]")
-            print("Manages workspace profiles, configuration, backups, and directory sync.")
+            print(
+                "Usage: repo workspace"
+                " [create|switch|rename|remove|list|info|export|import|backup|sync]"
+            )
+            print(
+                "Manages workspace profiles, configuration, backups, and"
+                " directory sync."
+            )
         elif sub == "repos":
             print("Usage: repo repos [browse|search|add|remove|verify|info]")
             print("Manages saved repository history and reachability verification.")
@@ -1645,9 +1635,7 @@ def command_clear(args: List[str] = None):
 
     if sub in ("repos", "repositories"):
         try:
-            confirm = questionary.confirm(
-                "Clear saved repository history?"
-            ).ask()
+            confirm = questionary.confirm("Clear saved repository history?").ask()
         except Exception:
             confirm = input(
                 "Clear saved repository history? (Y/N): "
@@ -1677,9 +1665,10 @@ def command_clear(args: List[str] = None):
         try:
             confirm = questionary.confirm("Clear recent activity logs?").ask()
         except Exception:
-            confirm = input(
-                "Clear recent activity logs? (Y/N): "
-            ).strip().lower() in ("y", "yes")
+            confirm = input("Clear recent activity logs? (Y/N): ").strip().lower() in (
+                "y",
+                "yes",
+            )
         if confirm:
             memory["last_location"] = ""
             save_memory(memory)
@@ -1693,9 +1682,13 @@ def command_clear(args: List[str] = None):
             print("\nNo backup files found to clear.")
             return
         try:
-            confirm = questionary.confirm(f"Clear all {len(backups)} backup files?").ask()
+            confirm = questionary.confirm(
+                f"Clear all {len(backups)} backup files?"
+            ).ask()
         except Exception:
-            confirm = input(f"Clear all {len(backups)} backup files? (Y/N): ").strip().lower() in ("y", "yes")
+            confirm = input(
+                f"Clear all {len(backups)} backup files? (Y/N): "
+            ).strip().lower() in ("y", "yes")
         if confirm:
             for b in backups:
                 delete_backup_file(b)
@@ -1812,7 +1805,9 @@ def dispatch_command(cmd_input: Union[str, List[str]]):
         return
 
     # Direct Git URL Auto-Detection
-    if main_cmd.startswith(("http://", "https://", "git@")) or main_cmd.endswith(".git"):
+    if main_cmd.startswith(("http://", "https://", "git@")) or main_cmd.endswith(
+        ".git"
+    ):
         command_clone([main_cmd] + sub_args)
         return
 
@@ -1825,8 +1820,15 @@ def dispatch_command(cmd_input: Union[str, List[str]]):
         "telemetry",
         "analytics",
     )
-    if main_cmd in future_cmds or (main_cmd == "workspace" and sub_args and sub_args[0].lower() in ("share", "publish")):
-        print(f"\n[Planned Feature] Command 'repo {main_cmd}' is scheduled for a future release (Not v2.0).")
+    if main_cmd in future_cmds or (
+        main_cmd == "workspace"
+        and sub_args
+        and sub_args[0].lower() in ("share", "publish")
+    ):
+        print(
+            f"\n[Planned Feature] Command 'repo {main_cmd}' is scheduled for a"
+            " future release."
+        )
         return
 
     handler = COMMAND_MAP.get(main_cmd)

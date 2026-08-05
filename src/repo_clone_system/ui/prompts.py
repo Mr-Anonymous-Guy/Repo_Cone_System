@@ -27,8 +27,14 @@ def ask_repo():
             print_goodbye()
             sys.exit(0)
 
-        if not repo.startswith(("http://", "https://", "git@")) and not repo.endswith(".git") and "github.com" not in repo:
-            print("Please enter a valid GitHub repository URL (e.g. https://github.com/user/repo).")
+        if (
+            not repo.startswith(("http://", "https://", "git@"))
+            and not repo.endswith(".git")
+            and "github.com" not in repo
+        ):
+            print(
+                "Please enter a valid GitHub repository URL (e.g. https://github.com/user/repo)."
+            )
             if not sys.stdin.isatty():
                 return "https://github.com/Mr-Anonymous-Guy/Repo_Clone_System"
             continue
