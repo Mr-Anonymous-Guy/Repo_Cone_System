@@ -26,6 +26,9 @@
   Saved Locations
   Workspace Aliases
   Memory Manager
+  Export Configuration
+  Import Configuration
+  Managed Backups
   Configuration Details
   System Doctor
   Statistics
@@ -42,29 +45,31 @@
 ## ✨ Features
 
 - 💻 **Global Terminal Executable (`repo`)**: Run `repo` from any directory in your shell.
-- ⚡ **CLI Subcommands**: Execute direct actions like `repo clone`, `repo repos`, `repo locations`, `repo alias`, `repo config`, `repo doctor`, `repo memory`, `repo stats`, `repo update`.
+- ⚡ **CLI Subcommands**: Execute direct actions like `repo clone`, `repo repos`, `repo locations`, `repo alias`, `repo export`, `repo import`, `repo backups`, `repo config`, `repo doctor`, `repo memory`, `repo stats`, `repo update`.
 - 🎨 **VS Code–Style Command Palette**: Interactive palette with real-time prefix filtering and arrow key selection.
+- 📤 **Portable Export / Import**: Easily transfer complete configuration (repos, locations, aliases, metadata) between computers (`repo export` / `repo import`).
+- 🔀 **Smart Merge & Replace Import Modes**:
+  - **Merge**: Combines backup data with live memory, deduplicating repositories and locations.
+  - **Replace**: Overwrites live memory state after creating an automatic timestamped pre-import safety backup.
+- 📁 **Managed Backup Directory (`repo backups`)**: Dedicated `Backups/` folder inside configuration directory storing interactive and automatic safety backups.
 - 🏷️ **Workspace Aliases**: Assign shortcut names (`work`, `learn`, `github`) to frequently used directories for one-click cloning.
 - 📁 **Smart Location Manager**: Add, remove, rename, and verify saved clone destinations with automated missing folder cleanup.
 - 📦 **Repository Manager & Search**: Track repository history with clone timestamps, fuzzy search (`repo repos search react`), and git reachability verification.
 - 🩺 **System Doctor (`repo doctor`)**: Diagnostic health suite checking Git, Python, internet connection, GitHub reachability, and memory permissions.
-- 💾 **Memory Manager & Backup**: Track memory file size and metrics, create timestamped backups (`repo memory backup`), and restore interactively (`repo memory restore`).
 - ⚙️ **Config Inspection**: Inspect OS paths (`repo config`), open `memory.json` in default editor (`--open`), or view the config directory in file explorer (`--folder`).
 - 🚪 **Safe Exit & Interruption Handling**: Gracefully handles Ctrl+C and Ctrl+D/Ctrl+Z without showing tracebacks.
 
 ---
 
-## 📦 Storage & Migration
+## 📦 Storage & Backup Locations
 
-Memory (`memory.json`) is stored in your operating system's standard user configuration directory:
+Memory (`memory.json`) and managed backups are stored in your operating system's standard user configuration directory:
 
-| OS | Storage Location |
-|---|---|
-| **Windows** | `%APPDATA%\RepoCloneSystem\memory.json` |
-| **macOS** | `~/Library/Application Support/RepoCloneSystem/memory.json` |
-| **Linux** | `~/.config/repo-clone-system/memory.json` |
-
-*Automatic Migration*: Existing memory data from legacy locations is automatically migrated on first launch of v2.0.0 with zero data loss.
+| OS | Memory Path | Backups Directory |
+|---|---|---|
+| **Windows** | `%APPDATA%\RepoCloneSystem\memory.json` | `%APPDATA%\RepoCloneSystem\Backups\` |
+| **macOS** | `~/Library/Application Support/RepoCloneSystem/memory.json` | `~/Library/Application Support/RepoCloneSystem/Backups/` |
+| **Linux** | `~/.config/repo-clone-system/memory.json` | `~/.config/repo-clone-system/Backups/` |
 
 ---
 
@@ -86,20 +91,69 @@ repo
 
 ---
 
-## ▶️ Command Reference
+## 📤 Export & Import Usage
 
-Run `repo` without arguments to open the interactive Command Palette:
+### Export Configuration
+
+Export your complete setup to a portable JSON backup file:
 
 ```bash
-repo
+# Export to current directory with timestamped filename (e.g. repo-backup-2026-08-05-18-42-10.json)
+repo export
+
+# Export to a custom backup directory (prompts to create folder if missing)
+repo export D:\Backups
+
+# Export to a specific file path
+repo export "D:\Backups\my-setup-backup.json"
+
+# View export history log
+repo export history
 ```
 
-Or pass subcommands directly:
+### Import Configuration
+
+Import a configuration backup file interactively:
+
+```bash
+# Interactive mode (prompts for backup file path)
+repo import
+
+# Import specific backup file
+repo import backup.json
+repo import D:\Backups\my-setup-backup.json
+```
+
+**Import Modes**:
+- **Merge**: Combines repositories, locations, and aliases without creating duplicates.
+- **Replace**: Creates an automatic safety backup (`auto-backup-before-import-*.json`), then overwrites live memory.
+
+### Manage Backups
+
+Browse and manage backups stored in the system `Backups/` folder:
+
+```bash
+# Interactive backup browser (inspect backup details, version, schema)
+repo backups
+
+# Interactively select and remove a backup file
+repo backups remove
+
+# Display export history
+repo backups history
+```
+
+---
+
+## ▶️ Command Reference
 
 | Command | Subcommands / Flags | Description | Example |
 |---|---|---|---|
 | `repo` | — | Opens interactive Command Palette | `repo` |
 | `repo clone` | — | Starts repository clone workflow | `repo clone` |
+| `repo export` | `[path]`, `history` | Export complete configuration to JSON | `repo export D:\Backups` |
+| `repo import` | `[path]` | Import backup file (Merge or Replace) | `repo import backup.json` |
+| `repo backups` | `remove`, `history` | Browse managed backups & export history | `repo backups` |
 | `repo repos` | `add`, `remove`, `search <q>`, `verify` | Manage saved repositories & check reachability | `repo repos search react` |
 | `repo locations` | `add`, `remove`, `rename`, `verify` | Manage destination folders & cleanup missing | `repo locations verify` |
 | `repo alias` | `add <name> <path>`, `remove`, `rename` | Manage workspace shortcut aliases | `repo alias add work D:\Projects` |
@@ -135,11 +189,11 @@ Repo_Clone_System/
 ├── src/
 │   └── repo_clone_system/        # Core package code
 │       ├── core/                 # Git execution & path validation
-│       ├── services/             # Config, Location, Repo, Alias, Doctor, Memory services
+│       ├── services/             # Backup, Config, Location, Repo, Alias, Doctor, Memory services
 │       ├── storage/              # OS-dependent config path & memory storage
 │       └── ui/                   # Command Palette & terminal interaction
 │
-├── tests/                        # Pytest unit test suite (24 tests)
+├── tests/                        # Pytest unit test suite (36 tests)
 ├── app.py                        # Dev launcher
 ├── pyproject.toml                # PEP 621 packaging metadata
 └── README.md                     # Package documentation
@@ -154,8 +208,8 @@ Repo_Clone_System/
 - [x] CLI Subcommands (`repo clone`, `repo repos`, `repo stats`, etc.)
 - [x] Global interruption handling (Ctrl+C / Ctrl+D)
 - [x] Workspace Aliases & Location Manager (`v2.0.0`)
+- [x] Portable Import / Export Backup System (`v2.0.0`)
 - [x] System Doctor & Diagnostic Suite (`v2.0.0`)
-- [x] Memory Backup & Interactive Restore (`v2.0.0`)
 - [x] Repository Fuzzy Search & Reachability Verification (`v2.0.0`)
 - [ ] SSH & Private Repository authentication helper
 - [ ] GitHub CLI (`gh`) integration for automatic fork-and-clone
@@ -166,7 +220,7 @@ Repo_Clone_System/
 
 Releases are published to [PyPI](https://pypi.org/project/repo-clone-system/) automatically via **PyPI Trusted Publishing (OIDC)**.
 
-- **No API Keys or Secrets Required**: Authentication uses short-lived OpenID Connect (OIDC) JWT tokens exchanged directly between GitHub Actions and PyPI.
+- **No API Keys or Secrets Required**: Authentication uses short-lived OpenID Connect (OIDC) JWT tokens.
 - **Automatic Releases**: Publishing triggers automatically whenever a new GitHub Release is published.
 
 ---
@@ -174,8 +228,6 @@ Releases are published to [PyPI](https://pypi.org/project/repo-clone-system/) au
 ## 🤝 Contributing
 
 Contributions are welcome! Please read [CONTRIBUTING.md](CONTRIBUTING.md) and our [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) before submitting a pull request.
-
-To set up your local development environment:
 
 ```bash
 git clone https://github.com/Mr-Anonymous-Guy/Repo_Cone_System.git

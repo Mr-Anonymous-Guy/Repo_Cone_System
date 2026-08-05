@@ -8,6 +8,7 @@ Welcome to the official developer documentation for `Repo_Clone_System`.
 
 - **`src/repo_clone_system/core/`**: Core logic for Git execution, path validation, and global interruption handling.
 - **`src/repo_clone_system/services/`**: Business logic services:
+  - `backup_service.py`: Import / Export system, backup directory management, schema versioning, export history, and auto-backups.
   - `config_service.py`: OS config inspection, opening memory file/folder.
   - `location_service.py`: Location manager, path validation, missing folder cleanup.
   - `repo_service.py`: Repository tracking, fuzzy search, reachability check.
@@ -17,13 +18,16 @@ Welcome to the official developer documentation for `Repo_Clone_System`.
   - `update_service.py`: PyPI update checker.
 - **`src/repo_clone_system/storage/`**: OS-dependent state management & JSON memory persistence (`memory.json`).
 - **`src/repo_clone_system/ui/`**: Interactive Command Palette, prompt handlers, and formatted console banners.
-- **`tests/`**: Unit test suite powered by Pytest (24 tests).
+- **`tests/`**: Unit test suite powered by Pytest (36 tests).
 
 ## Available Subcommands
 
 Run `repo <subcommand>` directly or execute `repo` to open the interactive Command Palette.
 
 - `repo clone`: Launches repository URL input and destination picker.
+- `repo export`: Export configuration backup (`repo export [path]`, `repo export history`).
+- `repo import`: Import configuration backup (`repo import [path]`) with Merge vs Replace choices.
+- `repo backups`: Managed backups & export history (`repo backups remove`, `repo backups history`).
 - `repo repos`: Repository manager (`add`, `remove`, `search <q>`, `verify`).
 - `repo locations`: Location manager (`add`, `remove`, `rename`, `verify`).
 - `repo alias`: Workspace alias manager (`add <name> <path>`, `remove`, `rename`).
@@ -36,11 +40,17 @@ Run `repo <subcommand>` directly or execute `repo` to open the interactive Comma
 - `repo clear`: Erases saved memory history.
 - `repo exit`: Exits the application.
 
-## Storage Locations
+## Storage & Backup Locations
 
-- **Windows**: `%APPDATA%\RepoCloneSystem\memory.json`
-- **macOS**: `~/Library/Application Support/RepoCloneSystem/memory.json`
-- **Linux**: `~/.config/repo-clone-system/memory.json`
+- **Windows**:
+  - Memory: `%APPDATA%\RepoCloneSystem\memory.json`
+  - Backups: `%APPDATA%\RepoCloneSystem\Backups\`
+- **macOS**:
+  - Memory: `~/Library/Application Support/RepoCloneSystem/memory.json`
+  - Backups: `~/Library/Application Support/RepoCloneSystem/Backups/`
+- **Linux**:
+  - Memory: `~/.config/repo-clone-system/memory.json`
+  - Backups: `~/.config/repo-clone-system/Backups/`
 
 ## Developer Quickstart
 
