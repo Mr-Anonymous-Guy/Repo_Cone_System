@@ -2,6 +2,10 @@ import sys
 
 from repo_clone_system.core.exit_handler import run_with_exit_handler
 from repo_clone_system.core.utils import check_git
+from repo_clone_system.services.backup_service import (
+    auto_backup_on_exit_if_changed,
+    record_initial_memory_hash,
+)
 from repo_clone_system.ui.commands import dispatch_command
 from repo_clone_system.ui.palette import show_command_palette
 
@@ -18,6 +22,8 @@ def main():
         except Exception:
             pass
 
+    record_initial_memory_hash()
+
     if not check_git():
         print("\nGit is not installed or is not in PATH.")
         print("Install Git and try again.")
@@ -27,6 +33,7 @@ def main():
     # (e.g. 'repo clone', 'repo config --open')
     if len(sys.argv) > 1:
         dispatch_command(sys.argv[1:])
+        auto_backup_on_exit_if_changed()
         return
 
     # Interactive Command Palette Loop
@@ -41,7 +48,10 @@ def main():
 
 def cli_entry_point():
     """Console script entry point for 'repo' command."""
-    run_with_exit_handler(main)
+    try:
+        run_with_exit_handler(main)
+    finally:
+        auto_backup_on_exit_if_changed()
 
 
 if __name__ == "__main__":

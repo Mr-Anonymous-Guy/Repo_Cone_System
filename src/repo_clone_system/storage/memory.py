@@ -33,8 +33,19 @@ def get_config_dir() -> Path:
 
 
 def get_memory_file() -> Path:
-    """Returns the absolute path to memory.json."""
-    return get_config_dir() / "memory.json"
+    """Returns the absolute path to memory.json for the active profile."""
+    config_dir = get_config_dir()
+    profiles_file = config_dir / "profiles.json"
+    if profiles_file.exists():
+        try:
+            with open(profiles_file, "r", encoding="utf-8") as f:
+                data = json.load(f)
+            active = data.get("active_profile", "Default")
+            if active and active.lower() != "default":
+                return config_dir / "profiles" / active / "memory.json"
+        except Exception:
+            pass
+    return config_dir / "memory.json"
 
 
 CONFIG_DIR = get_config_dir()
@@ -123,6 +134,14 @@ def reset_memory():
             "aliases": {},
         }
     )
+    config_dir = get_config_dir()
+    for fname in ("profiles.json", "sync_config.json"):
+        f_path = config_dir / fname
+        if f_path.exists():
+            try:
+                f_path.unlink()
+            except Exception:
+                pass
     save_memory(memory)
 
 

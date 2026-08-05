@@ -12,6 +12,7 @@ PALETTE_HEADER = (
 
 COMMAND_CHOICES = [
     Choice(title="Clone Repository", value="clone"),
+    Choice(title="Workspace Manager", value="workspace"),
     Choice(title="Saved Repositories", value="repos"),
     Choice(title="Saved Locations", value="locations"),
     Choice(title="Workspace Aliases", value="alias"),

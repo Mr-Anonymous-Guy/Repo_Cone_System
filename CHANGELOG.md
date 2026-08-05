@@ -8,6 +8,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [2.0.0] - 2026-08-05
 
 ### Added
+- **Workspace Management Subsystem (`repo workspace`)**: Interactive Workspace Manager command palette and subcommand matrix (`export`, `import`, `backup`, `profile`, `sync`, `info`).
+- **Multi-Profile Workspace Management (`repo workspace profile`)**: Support for `Default`, `College`, `Office`, `Laptop`, `Personal`, and custom workspace profiles with isolated memory stores and instant hot-reloading on profile switch.
+- **Sync Manager & Provider Architecture (`repo workspace sync`)**: Abstract `BaseSyncProvider` framework with functional `LocalFolderSyncProvider` (local folders, OneDrive, Dropbox, Google Drive, network shares) and cloud provider placeholders (`OneDriveSyncProvider`, `DropboxSyncProvider`, `GoogleDriveSyncProvider`, `GitHubGistSyncProvider`, `CustomSyncProvider`).
+- **Auto-Backup Exit Trigger & 20-Backup Rotation**: Automatically captures timestamped auto-backups on CLI exit if memory changes were detected, enforcing a 20-backup rotation for auto-backups while preserving manual exports indefinitely.
+- **Workspace Information Metrics (`repo workspace info`)**: Workspace summary metrics displaying active profile, repository/location/alias counts, storage size, schema version, package version, system platform, and Python version.
 - **Portable Import & Export (`repo export` / `repo import`)**: Complete configuration export with metadata (`schema_version`, timestamp, platform, Python version, memory).
 - **Import Modes (Merge & Replace)**: `Merge` mode combines repositories, locations, and aliases without duplicates. `Replace` mode creates an automatic safety backup before replacing live memory.
 - **Managed Backup Directory (`repo backups`)**: Dedicated `Backups/` directory inside OS config folder storing interactive and automatic pre-import safety backups (`auto-backup-before-import-*.json`).
@@ -22,7 +27,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **System Doctor (`repo doctor`)**: Automated system diagnostic health suite verifying Git, Python, network, GitHub, storage, and permissions.
 - **PyPI Update Checker (`repo update`)**: Non-intrusive PyPI version query displaying current version vs latest PyPI release.
 - **Command Palette Expansion**: All commands & subcommands integrated into the VS Code-style Command Palette with live fuzzy filtering.
-- **Comprehensive Test Suite**: Unit tests expanded to 36 tests across configuration, locations, repositories, memory, aliases, doctor, and import/export.
+- **Comprehensive Test Suite**: Unit tests expanded to 43 tests across configuration, locations, repositories, memory, aliases, doctor, import/export, profiles, sync, and rotation.
+
+### Changed
+- Memory system redesigned around Workspaces and multi-profile isolation.
+- Configuration and backup storage relocated to OS-compliant user configuration directories.
+- Backup system upgraded to support 20-backup auto-rotation and manual backup preservation.
+- Interactive Command Palette expanded to include all workspace management choices.
+
+### Improved
+- Complete documentation update across `README.md`, `CHANGELOG.md`, and `docs/index.md`.
+- Expanded unit test coverage and pre-push validation engine assurances.
+- Clean modular architecture following SOLID principles and PEP 8 guidelines.
+
+### Fixed
+- Various stability improvements, Unicode console stream encoding fallbacks, and profile list mutation safety.
 
 ## [0.1.0] - 2026-08-05
 

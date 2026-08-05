@@ -15,6 +15,7 @@ from repo_clone_system.services.alias_service import (
     rename_alias,
 )
 from repo_clone_system.services.backup_service import (
+    create_auto_backup,
     create_export,
     delete_backup_file,
     get_backup_summary,
@@ -43,6 +44,14 @@ from repo_clone_system.services.memory_service import (
     list_backups,
     restore_memory,
 )
+from repo_clone_system.services.profile_service import (
+    create_profile,
+    get_active_profile_name,
+    list_profiles,
+    remove_profile,
+    rename_profile,
+    switch_profile,
+)
 from repo_clone_system.services.repo_service import (
     add_repo,
     get_saved_repos,
@@ -50,10 +59,26 @@ from repo_clone_system.services.repo_service import (
     search_repos,
     verify_repos,
 )
+from repo_clone_system.services.sync_service import (
+    configure_sync_folder,
+    export_sync,
+    get_sync_status,
+    locate_latest_sync_backup,
+)
 from repo_clone_system.services.update_service import check_for_updates
+from repo_clone_system.services.workspace_service import (
+    export_workspace,
+    get_workspace_info,
+)
 from repo_clone_system.storage.memory import memory, reset_memory
 from repo_clone_system.ui.messages import print_goodbye, print_header
 from repo_clone_system.ui.prompts import ask_repo
+from repo_clone_system.ui.workspace_ui import (
+    show_backup_palette,
+    show_profile_palette,
+    show_sync_palette,
+    show_workspace_palette,
+)
 
 
 def command_clone(args: List[str] = None):
@@ -570,6 +595,256 @@ def command_backups(args: List[str] = None):
     print("-" * 50)
 
 
+def command_workspace(args: List[str] = None):
+    """Central handler for Workspace Management subsystem ('repo workspace')."""
+    if not args:
+        action = show_workspace_palette()
+        if not action or action == "exit":
+            return
+        args = [action]
+
+    sub = args[0].lower()
+    sub_args = args[1:]
+
+    if sub in ("switch", "use"):
+        command_workspace_profile(["switch"] + sub_args)
+    elif sub in ("create", "add"):
+        command_workspace_profile(["create"] + sub_args)
+    elif sub == "rename":
+        command_workspace_profile(["rename"] + sub_args)
+    elif sub in ("remove", "delete", "rm"):
+        command_workspace_profile(["remove"] + sub_args)
+    elif sub == "list":
+        command_workspace_profile(["list"] + sub_args)
+    elif sub == "export":
+        command_workspace_export(sub_args)
+    elif sub == "import":
+        command_workspace_import(sub_args)
+    elif sub in ("backup", "backups"):
+        command_workspace_backup(sub_args)
+    elif sub in ("profile", "profiles"):
+        command_workspace_profile(sub_args)
+    elif sub in ("sync", "synchronization"):
+        command_workspace_sync(sub_args)
+    elif sub in ("info", "metrics"):
+        command_workspace_info(sub_args)
+    else:
+        print(f"\nUnknown workspace subcommand 'repo workspace {sub}'.")
+        print(
+            "Available: create, switch, rename, remove, export, import, "
+            "backup, sync, info"
+        )
+
+
+def command_workspace_export(args: List[str] = None):
+    """Exports complete active workspace configuration."""
+    dest_input = " ".join(args).strip() if args else None
+
+    def _prompt_mkdir(folder_path: str) -> bool:
+        print(f"\nFolder '{folder_path}' does not exist.")
+        try:
+            return questionary.confirm("Create it?").ask()
+        except Exception:
+            choice = input("Create it? (Y/N): ").strip().lower()
+            return choice in ("y", "yes")
+
+    ok, msg, metadata = export_workspace(
+        dest_input=dest_input, prompt_mkdir_callback=_prompt_mkdir
+    )
+    if not ok:
+        print(f"\n{msg}")
+        return
+
+    print("\nWorkspace exported successfully.")
+    print("-" * 50)
+    print(f"Workspace Name : {metadata.get('workspace_name')}")
+    print(f"Repositories   : {metadata.get('repo_count')}")
+    print(f"Locations      : {metadata.get('location_count')}")
+    print(f"Aliases        : {metadata.get('alias_count')}")
+    print(f"Backup Size    : {metadata.get('size_fmt')}")
+    print(f"Export Path    : {metadata.get('path')}")
+    print("-" * 50)
+
+
+def command_workspace_import(args: List[str] = None):
+    """Imports workspace backup file."""
+    command_import(args)
+
+
+def command_workspace_backup(args: List[str] = None):
+    """Workspace Backup Manager ('repo workspace backup')."""
+    if not args:
+        action = show_backup_palette()
+        if not action or action == "exit":
+            return
+        args = [action]
+
+    sub = args[0].lower()
+    if sub in ("create", "add"):
+        ok, msg, path = create_auto_backup()
+        print(f"\n{msg}")
+    elif sub == "restore":
+        command_memory(["restore"])
+    elif sub in ("list", "view"):
+        command_backups([])
+    elif sub in ("remove", "delete", "rm"):
+        command_backups(["remove"])
+    elif sub == "history":
+        command_backups(["history"])
+    else:
+        print(f"\nUnknown backup subcommand 'repo workspace backup {sub}'.")
+
+
+def command_workspace_profile(args: List[str] = None):
+    """Workspace Profile Manager ('repo workspace profile')."""
+    if not args:
+        action = show_profile_palette()
+        if not action or action == "exit":
+            return
+        args = [action]
+
+    sub = args[0].lower()
+    sub_args = args[1:]
+
+    if sub in ("list", ""):
+        profiles = list_profiles()
+        active = get_active_profile_name()
+        print("\nWorkspace Profiles")
+        print("-" * 40)
+        for p in profiles:
+            marker = "❯ * (active)" if p.lower() == active.lower() else "  "
+            print(f"  {marker:<12} {p}")
+        print("-" * 40)
+
+    elif sub in ("switch", "use"):
+        if not sub_args:
+            profiles = list_profiles()
+            choices = [Choice(p, value=p) for p in profiles]
+            try:
+                target = questionary.select(
+                    "Select profile to switch to", choices=choices
+                ).ask()
+            except Exception:
+                target = None
+        else:
+            target = sub_args[0]
+
+        if target:
+            ok, msg = switch_profile(target)
+            print(f"\n{msg}")
+
+    elif sub in ("create", "add"):
+        if not sub_args:
+            try:
+                name = questionary.text("Enter new profile name:").ask()
+            except Exception:
+                name = input("Enter new profile name: ").strip()
+        else:
+            name = sub_args[0]
+
+        if name:
+            ok, msg = create_profile(name)
+            print(f"\n{msg}")
+
+    elif sub == "rename":
+        if len(sub_args) < 2:
+            print("\nUsage: repo workspace profile rename <old_name> <new_name>")
+            return
+        ok, msg = rename_profile(sub_args[0], sub_args[1])
+        print(f"\n{msg}")
+
+    elif sub in ("remove", "delete", "rm"):
+        if not sub_args:
+            profiles = [p for p in list_profiles() if p.lower() != "default"]
+            choices = [Choice(p, value=p) for p in profiles]
+            try:
+                target = questionary.select(
+                    "Select profile to remove", choices=choices
+                ).ask()
+            except Exception:
+                target = None
+        else:
+            target = sub_args[0]
+
+        if target:
+            ok, msg = remove_profile(target)
+            print(f"\n{msg}")
+
+    else:
+        print(f"\nUnknown profile subcommand 'repo workspace profile {sub}'.")
+
+
+def command_workspace_sync(args: List[str] = None):
+    """Workspace Sync Manager ('repo workspace sync')."""
+    if not args:
+        action = show_sync_palette()
+        if not action or action == "exit":
+            return
+        args = [action]
+
+    sub = args[0].lower()
+    sub_args = args[1:]
+
+    if sub in ("config", "configure"):
+        if not sub_args:
+            try:
+                folder = questionary.text("Enter sync folder path:").ask()
+            except Exception:
+                folder = input("Enter sync folder path: ").strip()
+        else:
+            folder = " ".join(sub_args)
+
+        if folder:
+            ok, msg = configure_sync_folder(folder)
+            print(f"\n{msg}")
+
+    elif sub == "export":
+        ok, msg, path = export_sync()
+        print(f"\n{msg}")
+
+    elif sub == "import":
+        ok, msg, path, data = locate_latest_sync_backup()
+        if not ok:
+            print(f"\n{msg}")
+            return
+        command_import([str(path)])
+
+    elif sub == "status":
+        status = get_sync_status()
+        print("\nWorkspace Sync Status")
+        print("-" * 50)
+        print(f"Configured Folder : {status['sync_folder']}")
+        print(f"Provider          : {status['provider']}")
+        print(f"Active Profile    : {status['active_profile']}")
+        print(f"Latest Backup     : {status['latest_backup']}")
+        print(f"Backup Size       : {status['backup_size']}")
+        print(f"Last Sync Export  : {status['last_export']}")
+        print(f"Last Sync Import  : {status['last_import']}")
+        print("-" * 50)
+
+    else:
+        print(f"\nUnknown sync subcommand 'repo workspace sync {sub}'.")
+
+
+def command_workspace_info(args: List[str] = None):
+    """Displays comprehensive workspace information ('repo workspace info')."""
+    info = get_workspace_info()
+    print("\nRepo_Clone_System Workspace Information")
+    print("-" * 55)
+    print(f"Workspace Name    : {info['workspace_name']}")
+    print(f"Current Profile   : {info['active_profile']}")
+    print(f"Repositories      : {info['repo_count']}")
+    print(f"Locations         : {info['location_count']}")
+    print(f"Workspace Aliases : {info['alias_count']}")
+    print(f"Workspace Size    : {info['memory_size']}")
+    print(f"Backup Count      : {info['backup_count']}")
+    print(f"Schema Version    : {info['schema_version']}")
+    print(f"Package Version   : {info['package_version']}")
+    print(f"Platform          : {info['platform']}")
+    print(f"Python Version    : {info['python_version']}")
+    print("-" * 55)
+
+
 def command_config(args: List[str] = None):
     """Displays system configuration and opens config directory/file ('repo config')."""
     if args:
@@ -658,6 +933,10 @@ def command_help(args: List[str] = None):
     print(f"\nRepo_Clone_System v{__version__} Commands Reference\n")
     print(f"{'clone':<15} Start repository clone workflow")
     print(
+        f"{'workspace':<15} Workspace manager (subcommands: export, import, "
+        "backup, profile, sync, info)"
+    )
+    print(
         f"{'repos':<15} Repository manager (subcommands: add, remove, search, verify)"
     )
     print(
@@ -714,6 +993,7 @@ def command_exit(args: List[str] = None):
 
 COMMAND_MAP = {
     "clone": command_clone,
+    "workspace": command_workspace,
     "repos": command_repos,
     "locations": command_locations,
     "alias": command_alias,

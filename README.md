@@ -44,10 +44,14 @@
 
 ## ✨ Features
 
+- 💼 **Workspace Management Subsystem (`repo workspace`)**: Complete workspace isolation (`Default`, `College`, `Office`, `Laptop`, `Personal`, custom) with independent repositories, locations, aliases, settings, and statistics.
+- 💼 **Multi-Profile Workspace Management**: Switch profiles instantly (`repo workspace switch <name>`) with zero-restart hot-reloading.
+- 🔄 **Sync Manager & Directory Synchronization**: Configure default sync directories (`repo workspace sync config <path>`) supporting local folders, mapped drives, OneDrive, Dropbox, Google Drive, and custom directories.
+- 🔄 **Incremental Exit Backups & 20-Backup Rotation**: Automatically captures incremental backups on CLI exit if workspace changes are detected, keeping the 20 newest auto-backups while preserving manual exports indefinitely.
 - 💻 **Global Terminal Executable (`repo`)**: Run `repo` from any directory in your shell.
-- ⚡ **CLI Subcommands**: Execute direct actions like `repo clone`, `repo repos`, `repo locations`, `repo alias`, `repo export`, `repo import`, `repo backups`, `repo config`, `repo doctor`, `repo memory`, `repo stats`, `repo update`.
+- ⚡ **CLI Subcommands**: Execute direct actions like `repo workspace`, `repo clone`, `repo repos`, `repo locations`, `repo alias`, `repo export`, `repo import`, `repo backups`, `repo config`, `repo doctor`, `repo memory`, `repo stats`, `repo update`.
 - 🎨 **VS Code–Style Command Palette**: Interactive palette with real-time prefix filtering and arrow key selection.
-- 📤 **Portable Export / Import**: Easily transfer complete configuration (repos, locations, aliases, metadata) between computers (`repo export` / `repo import`).
+- 📤 **Portable Export / Import**: Easily transfer complete workspace configuration between computers (`repo export` / `repo import`).
 - 🔀 **Smart Merge & Replace Import Modes**:
   - **Merge**: Combines backup data with live memory, deduplicating repositories and locations.
   - **Replace**: Overwrites live memory state after creating an automatic timestamped pre-import safety backup.
@@ -63,7 +67,7 @@
 
 ## 📦 Storage & Backup Locations
 
-Memory (`memory.json`) and managed backups are stored in your operating system's standard user configuration directory:
+Memory (`memory.json`), profiles, and managed backups are stored in your operating system's standard user configuration directory:
 
 | OS | Memory Path | Backups Directory |
 |---|---|---|
@@ -91,6 +95,48 @@ repo
 
 ---
 
+## 💼 Workspace Management Subsystem (`repo workspace`)
+
+The Workspace Management Subsystem provides centralized control over backups, profiles, synchronization, system info, and cloud sync providers.
+
+```bash
+# Launch interactive Workspace Manager
+repo workspace
+
+# Direct Workspace Management Subcommands
+repo workspace create <workspace_name>
+repo workspace switch <workspace_name>
+repo workspace rename <old_name> <new_name>
+repo workspace remove <workspace_name>
+repo workspace export [destination_folder_or_file]
+repo workspace import [backup_file_path]
+
+# Multi-Profile Management (Default, College, Office, Laptop, Personal, Custom)
+repo workspace profile list
+repo workspace profile switch <profile_name>
+repo workspace profile create <profile_name>
+repo workspace profile rename <old_name> <new_name>
+repo workspace profile remove <profile_name>
+
+# Sync Manager & Directory Synchronization
+repo workspace sync config <sync_folder_path>
+repo workspace sync export
+repo workspace sync import
+repo workspace sync status
+
+# Backup Manager & Auto-Backup Rotation
+repo workspace backup create
+repo workspace backup restore
+repo workspace backup list
+repo workspace backup remove
+repo workspace backup history
+
+# Workspace Information & System Metrics
+repo workspace info
+```
+
+---
+
 ## 📤 Export & Import Usage
 
 ### Export Configuration
@@ -98,7 +144,7 @@ repo
 Export your complete setup to a portable JSON backup file:
 
 ```bash
-# Export to current directory with timestamped filename (e.g. repo-backup-2026-08-05-18-42-10.json)
+# Export to current directory with timestamped filename (e.g. workspace-backup-2026-08-05-18-42-10.json)
 repo export
 
 # Export to a custom backup directory (prompts to create folder if missing)
@@ -150,6 +196,7 @@ repo backups history
 | Command | Subcommands / Flags | Description | Example |
 |---|---|---|---|
 | `repo` | — | Opens interactive Command Palette | `repo` |
+| `repo workspace` | `create`, `switch`, `rename`, `remove`, `export`, `import`, `backup`, `sync`, `info` | Workspace Management Subsystem | `repo workspace info` |
 | `repo clone` | — | Starts repository clone workflow | `repo clone` |
 | `repo export` | `[path]`, `history` | Export complete configuration to JSON | `repo export D:\Backups` |
 | `repo import` | `[path]` | Import backup file (Merge or Replace) | `repo import backup.json` |
@@ -189,11 +236,12 @@ Repo_Clone_System/
 ├── src/
 │   └── repo_clone_system/        # Core package code
 │       ├── core/                 # Git execution & path validation
-│       ├── services/             # Backup, Config, Location, Repo, Alias, Doctor, Memory services
-│       ├── storage/              # OS-dependent config path & memory storage
-│       └── ui/                   # Command Palette & terminal interaction
+│       ├── services/             # Workspace, Profile, Sync, Backup, Config, Location, Repo, Alias, Doctor services
+│       │   └── sync_providers/   # LocalFolder & Cloud Sync Providers architecture
+│       ├── storage/              # OS-dependent config path & profile-aware memory binding
+│       └── ui/                   # Workspace UI menus, Command Palette & terminal interaction
 │
-├── tests/                        # Pytest unit test suite (36 tests)
+├── tests/                        # Pytest unit test suite (43 tests)
 ├── app.py                        # Dev launcher
 ├── pyproject.toml                # PEP 621 packaging metadata
 └── README.md                     # Package documentation
@@ -207,6 +255,9 @@ Repo_Clone_System/
 - [x] VS Code-style Command Palette with live prefix filtering
 - [x] CLI Subcommands (`repo clone`, `repo repos`, `repo stats`, etc.)
 - [x] Global interruption handling (Ctrl+C / Ctrl+D)
+- [x] Workspace Management Subsystem & Multi-Profile Workspaces (`v2.0.0`)
+- [x] Workspace Sync Manager & Pluggable Provider Architecture (`v2.0.0`)
+- [x] Automatic Exit Incremental Backups & 20-Backup Rotation (`v2.0.0`)
 - [x] Workspace Aliases & Location Manager (`v2.0.0`)
 - [x] Portable Import / Export Backup System (`v2.0.0`)
 - [x] System Doctor & Diagnostic Suite (`v2.0.0`)

@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "repo-clone-system"
-version = "2.0.0"
+version = "0.2.0"
 description = "A professional, open-source Python CLI application for cloning GitHub repositories with destination memory, VS Code command palette, and subcommands."
 readme = "README.md"
 requires-python = ">=3.9"

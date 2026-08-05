@@ -14,6 +14,17 @@ from repo_clone_system.storage.memory import (
 )
 
 CURRENT_SCHEMA_VERSION = 1
+INITIAL_MEMORY_HASH: Optional[str] = None
+
+
+def record_initial_memory_hash():
+    """Records initial state of memory for exit change detection."""
+    global INITIAL_MEMORY_HASH
+    try:
+        current_mem = load_memory()
+        INITIAL_MEMORY_HASH = json.dumps(current_mem, sort_keys=True)
+    except Exception:
+        INITIAL_MEMORY_HASH = None
 
 
 def get_backups_dir() -> Path:
@@ -392,3 +403,42 @@ def get_export_history() -> List[dict]:
     except Exception:
         pass
     return []
+
+
+def rotate_auto_backups(max_keep: int = 20):
+    """Keep only max_keep newest automatic backups in Backups directory.
+
+    Manual exports (workspace-backup-*, repo-backup-*, custom files) are NEVER deleted.
+    """
+    backups_dir = get_backups_dir()
+    if not backups_dir.exists():
+        return
+
+    auto_files = [
+        f for f in backups_dir.glob("*.json") if f.name.startswith("auto-backup-")
+    ]
+    auto_files.sort(key=lambda p: p.stat().st_mtime, reverse=True)
+
+    if len(auto_files) > max_keep:
+        to_delete = auto_files[max_keep:]
+        for f in to_delete:
+            try:
+                f.unlink()
+            except Exception:
+                pass
+
+
+def auto_backup_on_exit_if_changed():
+    """Triggered on CLI exit.
+
+    Creates auto-backup if memory changed and rotates auto-backups to 20.
+    """
+    global INITIAL_MEMORY_HASH
+    try:
+        current_mem = load_memory()
+        curr_json = json.dumps(current_mem, sort_keys=True)
+        if INITIAL_MEMORY_HASH is not None and curr_json != INITIAL_MEMORY_HASH:
+            create_auto_backup()
+            rotate_auto_backups(max_keep=20)
+    except Exception:
+        pass
