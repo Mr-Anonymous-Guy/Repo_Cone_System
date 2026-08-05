@@ -1,0 +1,26 @@
+#!/bin/sh
+# Pre-Push Validation System — installed by install_hooks.py
+# This hook runs the full validation pipeline before every push.
+# To bypass (emergency only): git push --no-verify
+
+SCRIPT_DIR="$(cd "$(dirname "$0")/../.." && pwd)"
+
+echo ""
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo "  Pre-Push Validation System activated"
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo ""
+
+python "$SCRIPT_DIR/scripts/pre_push.py" --report "$@"
+EXIT_CODE=$?
+
+if [ $EXIT_CODE -ne 0 ]; then
+    echo ""
+    echo "\033[91m✗ PUSH BLOCKED — Validation failed.\033[0m"
+    echo "  Fix the issues above and try again."
+    echo "  Emergency bypass: git push --no-verify"
+    echo ""
+    exit 1
+fi
+
+exit 0

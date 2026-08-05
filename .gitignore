@@ -31,5 +31,6 @@ env/
 # Antigravity artifacts
 .gemini/
 
-# CI Guardian (generated)
+# CI Guardian / Pre-Push Validation (generated)
 ci_report.md
+pre_push_report.md
