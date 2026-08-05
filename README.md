@@ -16,29 +16,15 @@
 
 ```text
 ╭──────────────────────────────────────────────────────────────╮
-│ Repo_Clone_System v0.2.0                                     │
-│ Press ↑ ↓ to navigate • Enter to select • Esc to cancel      │
+│ Repo_Clone_System v2.0.0                                     │
+│ Type "help" to list commands or enter a GitHub URL.          │
+│ Press Ctrl+C anytime to exit safely.                         │
 ╰──────────────────────────────────────────────────────────────╯
 
 >
-❯ Clone Repository
-  Saved Repositories
-  Saved Locations
-  Workspace Aliases
-  Memory Manager
-  Export Configuration
-  Import Configuration
-  Managed Backups
-  Configuration Details
-  System Doctor
-  Statistics
-  Check Updates
-  Help
-  Clear History
-  Exit
 ```
 
-*Interactive VS Code-style Command Palette with real-time live filtering and arrow-key selection.*
+*Shell-first Git-style hybrid CLI with prompt history, tab completion, direct GitHub URL auto-dispatch, and contextual sub-menus.*
 
 ---
 

@@ -5,7 +5,19 @@ from repo_clone_system.services.repo_service import add_repo
 from repo_clone_system.storage.memory import memory, save_memory
 
 
-def clone_repository(repo_url, destination, folder_name):
+from repo_clone_system.ui.menu import choose_destination
+
+
+def clone_repository(repo_url, destination=None, folder_name=None):
+    if destination is None:
+        destination = choose_destination()
+        if not destination:
+            print("\nClone cancelled.")
+            return False
+
+    if not folder_name:
+        folder_name = get_repo_name(repo_url)
+
     print("\nCloning repository...\n")
 
     result = subprocess.run(

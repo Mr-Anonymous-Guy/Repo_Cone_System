@@ -3,14 +3,18 @@ from questionary import Choice
 
 from repo_clone_system import __version__
 
-PALETTE_HEADER = (
+STARTUP_HEADER = (
     "╭──────────────────────────────────────────────────────────────╮\n"
     f"│ Repo_Clone_System v{__version__:<41} │\n"
-    "│ Press ↑ ↓ to navigate • Enter to select • Esc to cancel      │\n"
+    '│ Type "help" to list commands or enter a GitHub URL.          │\n'
+    "│ Press Ctrl+C anytime to exit safely.                         │\n"
     "╰──────────────────────────────────────────────────────────────╯"
 )
 
+PALETTE_HEADER = STARTUP_HEADER
+
 COMMAND_CHOICES = [
+    Choice(title="➕ Custom URL / Direct Command...", value="__CUSTOM__"),
     Choice(title="Clone Repository", value="clone"),
     Choice(title="Workspace Manager", value="workspace"),
     Choice(title="Saved Repositories", value="repos"),
@@ -30,10 +34,13 @@ COMMAND_CHOICES = [
 ]
 
 
-def show_command_palette():
-    """Displays VS Code-style Command Palette with live search filter."""
-    print(PALETTE_HEADER)
+def print_startup_header():
+    """Prints the clean startup banner."""
+    print(STARTUP_HEADER)
 
+
+def show_command_palette():
+    """Displays VS Code-style Hybrid Command Palette (used for interactive menus)."""
     try:
         selected = questionary.select(
             "",
@@ -45,15 +52,21 @@ def show_command_palette():
             pointer="❯",
         ).ask()
 
+        if selected == "__CUSTOM__":
+            try:
+                user_input = questionary.text("Command or URL >").ask()
+            except Exception:
+                user_input = input("\nCommand or URL > ").strip()
+            return user_input.strip() if user_input and user_input.strip() else "help"
+
         if selected is None:
             return "exit"
 
         return selected
 
     except Exception:
-        # Fallback for non-interactive / unbuffered environments
         try:
-            cmd = input("\n> ").strip().lower()
+            cmd = input("\nCommand or URL > ").strip()
             return cmd if cmd else "help"
         except (KeyboardInterrupt, EOFError):
             return "exit"

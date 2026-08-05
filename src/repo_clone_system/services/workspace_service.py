@@ -28,7 +28,8 @@ def export_workspace(
     default_filename = f"workspace-backup-{timestamp_str}.json"
 
     if not dest_input or not dest_input.strip():
-        target_folder = Path.cwd()
+        target_folder = Path.cwd() / "workspace-backups"
+        target_folder.mkdir(parents=True, exist_ok=True)
         target_file = target_folder / default_filename
     else:
         clean_input = dest_input.strip().strip('"')

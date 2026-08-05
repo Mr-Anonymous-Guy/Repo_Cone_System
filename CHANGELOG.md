@@ -5,6 +5,24 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.0.0] - 2026-08-05
+
+### Added
+- **Git-Style Shell Interface**: Shell-first startup experience (`repo`) featuring a clean header banner, persistent prompt session, command history (`.repo_history`), and `WordCompleter` auto-completion.
+- **Direct Git/GitHub URL Gate**: Typing any direct URL (`https://github.com/...`, `git@github.com:...`) auto-dispatches immediately to `clone_repository()` without requiring interactive navigation.
+- **Sub-Menu Persistence Loops**: Parent domain commands (`workspace`, `repos`, `locations`, `alias`, `memory`, `export`, `import`, `backups`, `config`, `doctor`, `stats`, `help`, `clear`) loop interactively until `exit` or `0` is selected.
+- **Categorized Command Reference**: `repo help` organized into 12 distinct domain categories with individual command help outputs (`repo help clone`, `repo help workspace`, etc.).
+- **Dedicated Backup Directory Isolation**: All workspace exports automatically default to a isolated `workspace-backups/` directory, excluded from Git commits via `.gitignore`.
+- **Exhaustive CLI Command Matrix Test Verification**: Verified 100% execution pass across all 74 documented commands in `Command.md` (0 exceptions / 0 tracebacks).
+
+### Changed
+- Standardized CLI startup to shell-first `>` prompt with clean Ctrl+C graceful exit (`Session terminated safely. Goodbye.`).
+- Upgraded `__version__` to `3.0.0` across package metadata, `pyproject.toml`, documentation, and system diagnostics.
+
+### Fixed
+- Fixed module import in `cli.py` to resolve `get_config_dir` cleanly.
+- Fixed dictionary mutation handling for memory clear commands (`repo clear repos`, `repo clear locations`, `repo clear recent`).
+
 ## [2.0.0] - 2026-08-05
 
 ### Added

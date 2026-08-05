@@ -34,3 +34,9 @@ env/
 # CI Guardian / Pre-Push Validation (generated)
 ci_report.md
 pre_push_report.md
+
+# Workspace Backups
+workspace-backups/
+workspace-backup-*.json
+auto-backup-*.json
+repo-backup-*.json

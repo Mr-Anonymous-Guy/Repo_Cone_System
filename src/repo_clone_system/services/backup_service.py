@@ -3,7 +3,7 @@ import json
 import platform
 import sys
 from pathlib import Path
-from typing import Callable, List, Optional, Tuple
+from typing import Callable, List, Optional, Tuple, Union
 
 from repo_clone_system import __version__
 from repo_clone_system.storage.memory import (
@@ -53,7 +53,8 @@ def create_export(
     default_filename = f"repo-backup-{timestamp_str}.json"
 
     if not dest_input or not dest_input.strip():
-        target_folder = Path.cwd()
+        target_folder = Path.cwd() / "workspace-backups"
+        target_folder.mkdir(parents=True, exist_ok=True)
         target_file = target_folder / default_filename
     else:
         clean_input = dest_input.strip().strip('"')
@@ -127,8 +128,10 @@ def create_export(
         return False, f"Failed to write export file '{target_file}': {e}", {}
 
 
-def validate_backup_file(filepath: Path) -> Tuple[bool, str, dict]:
+def validate_backup_file(filepath: Union[str, Path]) -> Tuple[bool, str, dict]:
     """Validates backup file existence, JSON structure, and schema."""
+    if isinstance(filepath, str):
+        filepath = Path(filepath)
     if not filepath.exists() or not filepath.is_file():
         return False, f"Backup file '{filepath}' does not exist.", {}
 
