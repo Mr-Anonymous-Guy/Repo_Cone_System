@@ -1,46 +1,128 @@
 import json
+import os
+import shutil
+import sys
 from pathlib import Path
 
 # ======================================================
-# Configuration
+# OS-Specific Configuration Directory Resolution
 # ======================================================
 
-BASE_DIR = Path(__file__).resolve().parent.parent
-STORAGE_DIR = BASE_DIR / "storage"
-MEMORY_FILE = STORAGE_DIR / "memory.json"
 
-DEFAULT_MEMORY = {"last_location": "", "locations": [], "repositories": []}
+def get_config_dir() -> Path:
+    """Returns platform-specific configuration directory for RepoCloneSystem.
+
+    Windows : %APPDATA%\\RepoCloneSystem
+    macOS   : ~/Library/Application Support/RepoCloneSystem
+    Linux   : ~/.config/repo-clone-system or $XDG_CONFIG_HOME/repo-clone-system
+    """
+    if os.name == "nt":
+        appdata = os.environ.get("APPDATA")
+        if appdata:
+            base = Path(appdata)
+        else:
+            base = Path.home() / "AppData" / "Roaming"
+        return base / "RepoCloneSystem"
+    elif sys.platform == "darwin":
+        return Path.home() / "Library" / "Application Support" / "RepoCloneSystem"
+    else:
+        xdg = os.environ.get("XDG_CONFIG_HOME")
+        if xdg:
+            return Path(xdg) / "repo-clone-system"
+        return Path.home() / ".config" / "repo-clone-system"
 
 
-def load_memory():
-    """Load memory.json or create it inside storage/ if missing."""
-    STORAGE_DIR.mkdir(parents=True, exist_ok=True)
+def get_memory_file() -> Path:
+    """Returns the absolute path to memory.json."""
+    return get_config_dir() / "memory.json"
 
-    if not MEMORY_FILE.exists():
-        save_memory(DEFAULT_MEMORY)
-        return DEFAULT_MEMORY.copy()
+
+CONFIG_DIR = get_config_dir()
+MEMORY_FILE = get_memory_file()
+
+DEFAULT_MEMORY = {
+    "last_location": "",
+    "locations": [],
+    "repositories": [],
+    "aliases": {},
+}
+
+
+def _migrate_legacy_memory(target_file: Path):
+    """Migrates memory.json from legacy package or root location."""
+    if target_file.exists():
+        return
+
+    # Check potential legacy locations
+    base_dir = Path(__file__).resolve().parent.parent
+    candidates = [
+        base_dir / "storage" / "memory.json",
+        base_dir.parent.parent / "memory.json",
+    ]
+
+    for candidate in candidates:
+        if candidate.exists() and candidate.resolve() != target_file.resolve():
+            try:
+                target_file.parent.mkdir(parents=True, exist_ok=True)
+                shutil.copy2(candidate, target_file)
+                return
+            except Exception:
+                pass
+
+
+def load_memory() -> dict:
+    """Load memory.json from OS config directory with migration and fallback."""
+    config_dir = get_config_dir()
+    memory_file = get_memory_file()
+
+    config_dir.mkdir(parents=True, exist_ok=True)
+    _migrate_legacy_memory(memory_file)
+
+    if not memory_file.exists():
+        new_mem = DEFAULT_MEMORY.copy()
+        save_memory(new_mem)
+        return new_mem
 
     try:
-        with open(MEMORY_FILE, "r", encoding="utf-8") as f:
-            return json.load(f)
+        with open(memory_file, "r", encoding="utf-8") as f:
+            data = json.load(f)
+
+        # Ensure all required default keys exist
+        for key, val in DEFAULT_MEMORY.items():
+            if key not in data:
+                data[key] = val.copy() if isinstance(val, (list, dict)) else val
+
+        return data
 
     except Exception:
-        # If the JSON is corrupted, recreate it.
-        save_memory(DEFAULT_MEMORY)
-        return DEFAULT_MEMORY.copy()
+        # If corrupted, preserve defaults safely
+        new_mem = DEFAULT_MEMORY.copy()
+        save_memory(new_mem)
+        return new_mem
 
 
-def save_memory(memory_data):
-    STORAGE_DIR.mkdir(parents=True, exist_ok=True)
-    with open(MEMORY_FILE, "w", encoding="utf-8") as f:
+def save_memory(memory_data: dict):
+    """Saves memory data dictionary to memory.json."""
+    config_dir = get_config_dir()
+    memory_file = get_memory_file()
+    config_dir.mkdir(parents=True, exist_ok=True)
+
+    with open(memory_file, "w", encoding="utf-8") as f:
         json.dump(memory_data, f, indent=4)
 
 
 def reset_memory():
-    """Reset memory dict to DEFAULT_MEMORY and overwrite memory.json."""
+    """Resets memory dict to DEFAULT_MEMORY and overwrites memory.json."""
     global memory
     memory.clear()
-    memory.update({"last_location": "", "locations": [], "repositories": []})
+    memory.update(
+        {
+            "last_location": "",
+            "locations": [],
+            "repositories": [],
+            "aliases": {},
+        }
+    )
     save_memory(memory)
 
 

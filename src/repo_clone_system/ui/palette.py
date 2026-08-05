@@ -1,9 +1,11 @@
 import questionary
 from questionary import Choice
 
+from repo_clone_system import __version__
+
 PALETTE_HEADER = (
     "╭──────────────────────────────────────────────────────────────╮\n"
-    "│ Repo_Clone_System v0.1.0                                     │\n"
+    f"│ Repo_Clone_System v{__version__:<41} │\n"
     "│ Press ↑ ↓ to navigate • Enter to select • Esc to cancel      │\n"
     "╰──────────────────────────────────────────────────────────────╯"
 )
@@ -12,7 +14,12 @@ COMMAND_CHOICES = [
     Choice(title="Clone Repository", value="clone"),
     Choice(title="Saved Repositories", value="repos"),
     Choice(title="Saved Locations", value="locations"),
+    Choice(title="Workspace Aliases", value="alias"),
+    Choice(title="Memory Manager", value="memory"),
+    Choice(title="Configuration Details", value="config"),
+    Choice(title="System Doctor", value="doctor"),
     Choice(title="Statistics", value="stats"),
+    Choice(title="Check Updates", value="update"),
     Choice(title="Help", value="help"),
     Choice(title="Clear History", value="clear"),
     Choice(title="Exit", value="exit"),

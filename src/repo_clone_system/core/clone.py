@@ -1,11 +1,11 @@
 import subprocess
 
 from repo_clone_system.core.utils import get_repo_name
+from repo_clone_system.services.repo_service import add_repo
 from repo_clone_system.storage.memory import memory, save_memory
 
 
 def clone_repository(repo_url, destination, folder_name):
-
     print("\nCloning repository...\n")
 
     result = subprocess.run(
@@ -16,7 +16,6 @@ def clone_repository(repo_url, destination, folder_name):
     )
 
     if result.returncode != 0:
-
         error = result.stderr.lower()
 
         print("=" * 60)
@@ -44,13 +43,14 @@ def clone_repository(repo_url, destination, folder_name):
         return False
 
     # Save Memory
-    memory["last_location"] = str(destination)
+    dest_str = str(destination)
+    memory["last_location"] = dest_str
 
-    if str(destination) not in memory["locations"]:
-        memory["locations"].append(str(destination))
+    if dest_str not in memory.get("locations", []):
+        memory["locations"].append(dest_str)
 
-    if repo_url not in memory["repositories"]:
-        memory["repositories"].append(repo_url)
+    # Use add_repo service to record rich repo details
+    add_repo(repo_url, location=str(destination / folder_name))
 
     save_memory(memory)
 
