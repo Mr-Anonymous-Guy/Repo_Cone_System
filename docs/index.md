@@ -40,3 +40,12 @@ python -m pytest
 # Execute developer script
 python scripts/dev.py
 ```
+
+## Release & Publishing
+
+Package releases are published to PyPI automatically via **PyPI Trusted Publishing (OIDC)**:
+
+- Uses short-lived OpenID Connect (OIDC) identity tokens.
+- No long-lived `PYPI_API_TOKEN` API keys, usernames, or passwords stored in GitHub Secrets.
+- Publishing triggers automatically whenever a new GitHub Release is created.
+

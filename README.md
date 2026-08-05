@@ -130,6 +130,15 @@ Repo_Clone_System/
 
 ---
 
+## 🚀 Automated Publishing
+
+Releases are published to [PyPI](https://pypi.org/project/repo-clone-system/) automatically via **PyPI Trusted Publishing (OIDC)**.
+
+- **No API Keys or Secrets Required**: Authentication uses short-lived OpenID Connect (OIDC) JWT tokens exchanged directly between GitHub Actions and PyPI. No `PYPI_API_TOKEN` or repository secrets are required.
+- **Automatic Releases**: Publishing triggers automatically whenever a new GitHub Release is published.
+
+---
+
 ## 🤝 Contributing
 
 Contributions are welcome! Please read [CONTRIBUTING.md](CONTRIBUTING.md) and our [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) before submitting a pull request.
