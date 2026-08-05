@@ -9,12 +9,13 @@ A small Python CLI utility that clones GitHub repositories while remembering whe
 ## ✨ Features
 
 * 🔗 Clone any public GitHub repository
-* 📂 Remembers your last clone location
-* 🧠 Stores clone history in a simple `memory.json`
-* 📌 Reuse your previous location by simply pressing **Enter**
-* 📁 Detects existing folder names and lets you choose another
+* 🔄 **Continuous clone mode**: Keep cloning multiple repositories without restarting the app
+* 🚪 **Type "exit" anytime at repository prompt**: Gracefully quit the application whenever you are done
+* 📂 **Automatic previous-location reuse**: Press Enter to instantly use your last used destination location without confirmation prompts
+* 📁 **Optional creation of a new destination folder**: Safely create a single missing folder level with Y/N confirmation
+* 🧠 **Memory system**: Automatically stores clone history in `memory.json`
+* 📌 **Folder conflict handling**: Detects existing folder names and prompts you to choose another name
 * ⚠️ Handles common Git errors:
-
   * Repository not found
   * Invalid GitHub URL
   * Private repositories
@@ -42,10 +43,10 @@ git --version
 Run the script:
 
 ```bash
-python clone.py
+python app.py
 ```
 
-Example:
+Example session:
 
 ```text
 ============================================================
@@ -68,6 +69,17 @@ Repository cloned successfully!
 Repository : react
 Folder     : react
 Location   : D:\Projects\react
+
+------------------------------------------
+Ready for another repository.
+(Type 'exit' to quit.)
+------------------------------------------
+
+GitHub Repository URL
+> exit
+
+Thanks for using Repo_Clone_System!
+Goodbye.
 ```
 
 ---
@@ -76,7 +88,9 @@ Location   : D:\Projects\react
 
 The project automatically creates a `memory.json` file the first time you run it.
 
-Example:
+Pressing **ENTER** at the destination prompt automatically uses the last location stored in `memory.json`.
+
+Example `memory.json`:
 
 ```json
 {
@@ -98,9 +112,35 @@ The script remembers:
 * Every unique location you've used
 * Every repository you've cloned
 
-No database.
-No setup.
-Just one tiny JSON file.
+---
+
+## 💡 Examples
+
+### Automatic Previous Location Reuse
+
+```text
+Destination Folder
+(Leave blank to use previous location)
+>
+
+Using previous location:
+D:\Projects
+```
+
+### Folder Creation (One Level)
+
+```text
+Destination Folder
+(Leave blank to use previous location)
+> D:\Projects\Python
+
+Folder does not exist.
+
+Would you like to create it?
+(Y/N): Y
+
+Folder created successfully.
+```
 
 ---
 
@@ -110,7 +150,11 @@ If a folder with the same repository name already exists, the script won't overw
 
 Instead, it'll politely ask:
 
-> "Hey... that folder already exists. Want to give it another name?"
+```text
+Folder 'react' already exists.
+Enter another folder name
+>
+```
 
 Because deleting your projects without asking would be rude.
 
