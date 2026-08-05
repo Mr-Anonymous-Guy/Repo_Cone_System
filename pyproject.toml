@@ -1,0 +1,72 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "repo-clone-system"
+version = "0.1.0"
+description = "A professional, open-source Python CLI application for cloning GitHub repositories with destination memory, VS Code command palette, and subcommands."
+readme = "README.md"
+requires-python = ">=3.8"
+license = "MIT"
+keywords = ["github", "git", "clone", "cli", "command-palette", "developer-tools"]
+authors = [
+    { name = "Mr. Anonymous", email = "mr.anonymous071105@gmail.com" }
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Software Development :: Build Tools",
+    "Topic :: Utilities"
+]
+dependencies = [
+    "questionary>=2.0.0",
+    "prompt-toolkit>=3.0.0"
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0.0",
+    "pytest-cov>=4.0.0",
+    "black>=23.0.0",
+    "ruff>=0.1.0"
+]
+
+[project.urls]
+Homepage = "https://github.com/Mr-Anonymous-Guy/Repo_Cone_System"
+Repository = "https://github.com/Mr-Anonymous-Guy/Repo_Cone_System"
+Documentation = "https://github.com/Mr-Anonymous-Guy/Repo_Cone_System#readme"
+Changelog = "https://github.com/Mr-Anonymous-Guy/Repo_Cone_System/blob/main/CHANGELOG.md"
+
+[project.scripts]
+repo = "repo_clone_system.cli:cli_entry_point"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+"repo_clone_system" = ["storage/*.json"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+addopts = "-ra -q"
+
+[tool.black]
+line-length = 88
+target-version = ['py38']
+include = '\.pyi?$'
+
+[tool.ruff]
+line-length = 88
+target-version = "py38"
+select = ["E", "F", "W"]
+ignore = []

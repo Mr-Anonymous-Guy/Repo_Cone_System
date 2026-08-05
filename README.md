@@ -2,227 +2,149 @@
 
 > *Because typing the same clone location over and over again is a crime against productivity.*
 
-A small Python CLI utility that clones GitHub repositories while remembering where you usually clone them. It saves your previous locations and repository URLs so your future self has to type less and code more.
+[![PyPI Version](https://img.shields.io/pypi/v/repo-clone-system.svg)](https://pypi.org/project/repo-clone-system/)
+[![Python Versions](https://img.shields.io/pypi/pyversions/repo-clone-system.svg)](https://pypi.org/project/repo-clone-system/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![CI Tests](https://github.com/Mr-Anonymous-Guy/Repo_Cone_System/actions/workflows/tests.yml/badge.svg)](https://github.com/Mr-Anonymous-Guy/Repo_Cone_System/actions)
+[![Downloads](https://pepy.tech/badge/repo-clone-system)](https://pepy.tech/project/repo-clone-system)
+
+`Repo_Clone_System` is a professional, open-source Python CLI application designed to clone GitHub repositories while maintaining a smart memory of your destination folders and repository history. Launch `repo` from anywhere in your terminal!
+
+---
+
+## 📽️ Interactive Terminal Preview
+
+```text
+╭──────────────────────────────────────────────────────────────╮
+│ Repo_Clone_System v0.1.0                                     │
+│ Press ↑ ↓ to navigate • Enter to select • Esc to cancel      │
+╰──────────────────────────────────────────────────────────────╯
+
+>
+❯ Clone Repository
+  Saved Repositories
+  Saved Locations
+  Statistics
+  Help
+  Clear History
+  Exit
+```
+
+*Interactive VS Code-style Command Palette with real-time live filtering and arrow-key selection.*
 
 ---
 
 ## ✨ Features
 
-* 🔗 Clone any public GitHub repository
-* 🔄 **Continuous clone mode**: Keep cloning multiple repositories without restarting the app
-* 🚪 **Type "exit" anytime at repository prompt**: Gracefully quit the application whenever you are done
-* ⌨️ **Interactive Arrow-Key Destination Menu**: Navigate using ↑ and ↓ arrow keys, press Enter to select, or Esc to cancel
-* 📂 **Automatic Previous Locations**: Instant access to your last used location and clone history
-* 📁 **Optional creation of a new destination folder**: Safely create a single missing folder level with Y/N confirmation
-* 🧠 **Memory system**: Automatically stores clone history in `memory.json` without duplicates
-* 📌 **Folder conflict handling**: Detects existing folder names and prompts you to choose another name
-* ⚠️ Handles common Git errors:
-  * Repository not found
-  * Invalid GitHub URL
-  * Private repositories
-  * No internet connection
-  * Git not installed
-* 🛠️ Automatically creates required files on first run
+- 💻 **Global Terminal Executable (`repo`)**: Run `repo` from any directory in your shell.
+- ⚡ **CLI Subcommands**: Execute actions directly using `repo clone`, `repo repos`, `repo locations`, `repo stats`, `repo help`, `repo clear`, `repo update`, `repo exit`.
+- 🎨 **VS Code–Style Command Palette**: Interactive palette with real-time prefix filtering and arrow key selection.
+- 📂 **Automatic Destination Memory**: Instant reuse of your last used location or any previously saved destination.
+- 📁 **Smart Folder Creation**: Safely prompts to create missing directory paths (Y/N).
+- 📌 **Folder Conflict Protection**: Detects existing destination directories and prompts for alternative folder names.
+- 🚪 **Safe Exit & Interruption Handling**: Gracefully handles Ctrl+C and Ctrl+D/Ctrl+Z without showing ugly tracebacks.
 
 ---
 
-## 📦 Requirements & Installation
+## 📦 Installation
 
-* Python 3.8+
-* Git installed and added to your system PATH
-* `questionary` Python package
+### Production Installation (PyPI)
 
-Install dependencies:
+Install the official package via `pip`:
 
 ```bash
-pip install questionary
+pip install repo-clone-system
 ```
 
-Check Git installation:
+Launch the CLI from **any terminal**:
 
 ```bash
-git --version
+repo
 ```
 
 ---
 
-## ▶️ Usage
+## ▶️ Usage & Subcommands
 
-Run the script:
+Run `repo` without arguments to open the interactive Command Palette:
 
 ```bash
-python app.py
+repo
 ```
 
-Example session:
+Or pass subcommands directly:
+
+| Command | Description | Example |
+|---|---|---|
+| `repo` | Opens interactive Command Palette | `repo` |
+| `repo clone` | Starts repository clone workflow | `repo clone` |
+| `repo repos` | Shows saved repositories | `repo repos` |
+| `repo locations` | Shows saved clone locations | `repo locations` |
+| `repo stats` | Shows memory statistics | `repo stats` |
+| `repo help` | Shows help page | `repo help` |
+| `repo clear` | Clears memory history | `repo clear` |
+| `repo update` | Shows version & PyPI update command | `repo update` |
+| `repo exit` | Gracefully exits | `repo exit` |
+
+---
+
+## 📐 Repository Structure
 
 ```text
-============================================================
-GitHub Repository Cloner
-============================================================
-
-GitHub Repository URL
-> https://github.com/facebook/react.git
-
-Choose Clone Destination
-
-❯ ➕ New Location
-
-  🕒 Last Used
-    D:\Projects
-
-────────────────────
-
-  D:\Projects
-  D:\Learning
-  E:\Github
-  F:\College
-
-Cloning repository...
-
-============================================================
-Repository cloned successfully!
-============================================================
-
-Repository : react
-Folder     : react
-Location   : D:\Projects\react
-
-------------------------------------------
-Ready for another repository.
-(Type 'exit' to quit.)
-------------------------------------------
-
-GitHub Repository URL
-> exit
-
-Thanks for using Repo_Clone_System!
-Goodbye.
+Repo_Clone_System/
+│
+├── .github/                      # GitHub workflows, templates, and dependabot
+│   ├── ISSUE_TEMPLATE/
+│   ├── DISCUSSION_TEMPLATE/
+│   └── workflows/
+│
+├── docs/                         # Developer & API documentation
+│   └── index.md
+│
+├── scripts/                      # Developer automation scripts
+│   └── dev.py
+│
+├── src/
+│   └── repo_clone_system/        # Core package code
+│       ├── core/                 # Git execution & path validation
+│       ├── storage/              # State management & JSON memory
+│       └── ui/                   # Command Palette & terminal interaction
+│
+├── tests/                        # Pytest suite
+├── app.py                        # Dev launcher
+├── pyproject.toml                # PEP 621 packaging metadata
+└── README.md                     # Package documentation
 ```
 
 ---
 
-## 📋 Interactive Destination Selector
+## 🗺️ Roadmap
 
-The destination selector provides a terminal interface built dynamically from `memory.json`:
-
-```text
-Choose Clone Destination
-
-❯ ➕ New Location
-
-  🕒 Last Used
-    D:\Projects
-
-────────────────────
-
-  D:\Projects
-  D:\Learning
-  E:\Github
-  F:\College
-```
-
-### Controls & Features:
-* **Arrow keys (↑ / ↓)**: Navigate options seamlessly
-* **Enter**: Confirm selection
-* **Esc**: Cancel selection and return to the repository prompt
-* **Automatic history menu**: Displays all previously saved clone locations without duplicates
-* **Previous locations**: Instantly select your last used directory (`🕒 Last Used`) or any item from history without confirmation
-
----
-
-## 🧠 Memory System
-
-The project automatically creates a `memory.json` file the first time you run it.
-
-Example `memory.json`:
-
-```json
-{
-    "last_location": "D:\\Projects",
-    "locations": [
-        "D:\\Projects",
-        "D:\\Learning",
-        "E:\\Github",
-        "F:\\College"
-    ],
-    "repositories": [
-        "https://github.com/facebook/react.git",
-        "https://github.com/vercel/next.js.git"
-    ]
-}
-```
-
-The script remembers:
-
-* Your last clone location (`last_location`)
-* Every unique location you've used (`locations`)
-* Every repository you've cloned (`repositories`)
-
----
-
-## 📂 Folder Conflict?
-
-If a folder with the same repository name already exists, the script won't overwrite it.
-
-Instead, it'll politely ask:
-
-```text
-Folder 'react' already exists.
-Enter another folder name
->
-```
-
-Because deleting your projects without asking would be rude.
-
----
-
-## 🤔 Why?
-
-Me:
-
-> *"I'll only clone one repository today."*
-
-Also me, 30 minutes later:
-
-```
-git clone ...
-git clone ...
-git clone ...
-git clone ...
-git clone ...
-```
-
-After typing the same destination folder for the 18th time...
-
-**Repo_Clone_System was born.**
-
----
-
-## 📌 Future Ideas
-
-* ⭐ Clone from history
-* ⭐ Favorite locations
-* ⭐ Search previous repositories
-* ⭐ Open cloned project in VS Code
-* ⭐ Clone statistics
-* ⭐ GUI version
+- [x] Modern `src/` layout & PyPI distribution packaging (`v0.1.0`)
+- [x] VS Code-style Command Palette with live prefix filtering
+- [x] CLI Subcommands (`repo clone`, `repo repos`, `repo stats`, etc.)
+- [x] Global interruption handling (Ctrl+C / Ctrl+D)
+- [ ] SSH & Private Repository authentication helper
+- [ ] GitHub CLI (`gh`) integration for automatic fork-and-clone
+- [ ] Interactive repository search from saved history
 
 ---
 
 ## 🤝 Contributing
 
-Feel free to fork the project, improve it, or add your own ideas.
+Contributions are welcome! Please read [CONTRIBUTING.md](CONTRIBUTING.md) and our [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) before submitting a pull request.
 
-Pull requests are always welcome.
+To set up your local development environment:
+
+```bash
+git clone https://github.com/Mr-Anonymous-Guy/Repo_Cone_System.git
+cd Repo_Cone_System
+pip install -e ".[dev]"
+python scripts/dev.py
+```
 
 ---
 
 ## 📜 License
 
-Use it.
-Modify it.
-Break it.
-Fix it.
-
-Just don't blame the script if you accidentally clone the wrong repository. 😄
+Distributed under the [MIT License](LICENSE).

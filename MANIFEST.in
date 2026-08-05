@@ -1,0 +1,7 @@
+include LICENSE
+include README.md
+include CHANGELOG.md
+include CONTRIBUTING.md
+include CODE_OF_CONDUCT.md
+include SECURITY.md
+recursive-include src/repo_clone_system/storage *.json

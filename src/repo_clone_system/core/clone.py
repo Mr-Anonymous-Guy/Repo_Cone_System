@@ -1,7 +1,7 @@
 import subprocess
 
-from core.memory import memory, save_memory
-from core.utils import get_repo_name
+from repo_clone_system.core.utils import get_repo_name
+from repo_clone_system.storage.memory import memory, save_memory
 
 
 def clone_repository(repo_url, destination, folder_name):

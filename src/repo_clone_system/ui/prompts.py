@@ -1,5 +1,6 @@
 import sys
-from ui.messages import print_goodbye
+
+from repo_clone_system.ui.messages import print_goodbye
 
 
 def ask_repo():

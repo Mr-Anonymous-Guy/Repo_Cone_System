@@ -6,8 +6,8 @@ from pathlib import Path
 # ======================================================
 
 BASE_DIR = Path(__file__).resolve().parent.parent
-DATA_DIR = BASE_DIR / "data"
-MEMORY_FILE = DATA_DIR / "memory.json"
+STORAGE_DIR = BASE_DIR / "storage"
+MEMORY_FILE = STORAGE_DIR / "memory.json"
 
 DEFAULT_MEMORY = {
     "last_location": "",
@@ -17,8 +17,8 @@ DEFAULT_MEMORY = {
 
 
 def load_memory():
-    """Load memory.json or create it inside data/ if missing."""
-    DATA_DIR.mkdir(parents=True, exist_ok=True)
+    """Load memory.json or create it inside storage/ if missing."""
+    STORAGE_DIR.mkdir(parents=True, exist_ok=True)
 
     if not MEMORY_FILE.exists():
         save_memory(DEFAULT_MEMORY)
@@ -35,9 +35,21 @@ def load_memory():
 
 
 def save_memory(memory_data):
-    DATA_DIR.mkdir(parents=True, exist_ok=True)
+    STORAGE_DIR.mkdir(parents=True, exist_ok=True)
     with open(MEMORY_FILE, "w", encoding="utf-8") as f:
         json.dump(memory_data, f, indent=4)
+
+
+def reset_memory():
+    """Reset memory dict to DEFAULT_MEMORY and overwrite memory.json."""
+    global memory
+    memory.clear()
+    memory.update({
+        "last_location": "",
+        "locations": [],
+        "repositories": []
+    })
+    save_memory(memory)
 
 
 memory = load_memory()

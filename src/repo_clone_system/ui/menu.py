@@ -2,8 +2,8 @@ from pathlib import Path
 import questionary
 from questionary import Choice, Separator
 
-from core.destination import validate_and_get_destination_path
-from core.memory import memory
+from repo_clone_system.core.destination import validate_and_get_destination_path
+from repo_clone_system.storage.memory import memory
 
 
 def choose_destination():
