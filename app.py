@@ -1,6 +1,10 @@
 import json
 import subprocess
+import sys
 from pathlib import Path
+
+import questionary
+from questionary import Choice, Separator
 
 
 # ======================================================
@@ -95,25 +99,17 @@ def ask_repo():
         return repo
 
 
-def ask_location():
+def validate_and_get_destination_path():
 
     while True:
 
-        last = memory.get("last_location", "")
+        destination = input("\nEnter destination path\n> ").strip().strip('"')
 
-        destination = input(
-            "\nDestination Folder\n(Leave blank to use previous location)\n> "
-        ).strip().strip('"')
+        if destination == "":
+            print("Destination path cannot be empty.")
+            continue
 
-        if not destination:
-            if last:
-                print(f"\nUsing previous location:\n{last}")
-                dest_path = Path(last)
-            else:
-                print("No previous location saved. Please enter a destination folder.")
-                continue
-        else:
-            dest_path = Path(destination)
+        dest_path = Path(destination)
 
         # Case B: Entire path exists
         if dest_path.exists():
@@ -135,6 +131,45 @@ def ask_location():
         # Case C: Parent directory does not exist
         print("\nParent directory does not exist.\nPlease enter a valid location.")
         continue
+
+
+def choose_destination():
+
+    choices = [
+        Choice(title="➕ New Location", value="__NEW_LOCATION__")
+    ]
+
+    last = memory.get("last_location", "")
+    if last:
+        choices.append(
+            Choice(title=f"  🕒 Last Used\n    {last}", value=last)
+        )
+
+    # Ensure duplicate locations never appear
+    saved_locations = []
+    for loc in memory.get("locations", []):
+        if loc and loc not in saved_locations:
+            saved_locations.append(loc)
+
+    if saved_locations:
+        choices.append(Separator("────────────────────"))
+        for loc in saved_locations:
+            choices.append(Choice(title=f"  {loc}", value=loc))
+
+    selected = questionary.select(
+        "\nChoose Clone Destination",
+        choices=choices,
+        use_indicator=True
+    ).ask()
+
+    if selected is None:
+        # User pressed Esc to cancel
+        return None
+
+    if selected == "__NEW_LOCATION__":
+        return validate_and_get_destination_path()
+
+    return Path(selected)
 
 
 def clone_repository(repo_url, destination, folder_name):
@@ -235,7 +270,10 @@ def main():
 
         repo_url = ask_repo()
 
-        destination = ask_location()
+        destination = choose_destination()
+
+        if destination is None:
+            continue
 
         repo_name = get_repo_name(repo_url)
 
@@ -257,4 +295,16 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except KeyboardInterrupt:
+        print("\n--------------------------------------------------\n")
+        print("Operation cancelled by user.")
+        print("\nThank you for using Repo_Clone_System!")
+        print("Goodbye 👋\n")
+        print("--------------------------------------------------")
+        sys.exit(0)
+    except EOFError:
+        print("\nInput stream closed.")
+        print("Exiting Repo_Clone_System...")
+        sys.exit(0)

@@ -11,9 +11,10 @@ A small Python CLI utility that clones GitHub repositories while remembering whe
 * 🔗 Clone any public GitHub repository
 * 🔄 **Continuous clone mode**: Keep cloning multiple repositories without restarting the app
 * 🚪 **Type "exit" anytime at repository prompt**: Gracefully quit the application whenever you are done
-* 📂 **Automatic previous-location reuse**: Press Enter to instantly use your last used destination location without confirmation prompts
+* ⌨️ **Interactive Arrow-Key Destination Menu**: Navigate using ↑ and ↓ arrow keys, press Enter to select, or Esc to cancel
+* 📂 **Automatic Previous Locations**: Instant access to your last used location and clone history
 * 📁 **Optional creation of a new destination folder**: Safely create a single missing folder level with Y/N confirmation
-* 🧠 **Memory system**: Automatically stores clone history in `memory.json`
+* 🧠 **Memory system**: Automatically stores clone history in `memory.json` without duplicates
 * 📌 **Folder conflict handling**: Detects existing folder names and prompts you to choose another name
 * ⚠️ Handles common Git errors:
   * Repository not found
@@ -25,10 +26,17 @@ A small Python CLI utility that clones GitHub repositories while remembering whe
 
 ---
 
-## 📦 Requirements
+## 📦 Requirements & Installation
 
 * Python 3.8+
 * Git installed and added to your system PATH
+* `questionary` Python package
+
+Install dependencies:
+
+```bash
+pip install questionary
+```
 
 Check Git installation:
 
@@ -56,9 +64,19 @@ GitHub Repository Cloner
 GitHub Repository URL
 > https://github.com/facebook/react.git
 
-Destination Folder
-(Leave blank to use previous location)
-> D:\Projects
+Choose Clone Destination
+
+❯ ➕ New Location
+
+  🕒 Last Used
+    D:\Projects
+
+────────────────────
+
+  D:\Projects
+  D:\Learning
+  E:\Github
+  F:\College
 
 Cloning repository...
 
@@ -84,11 +102,38 @@ Goodbye.
 
 ---
 
+## 📋 Interactive Destination Selector
+
+The destination selector provides a terminal interface built dynamically from `memory.json`:
+
+```text
+Choose Clone Destination
+
+❯ ➕ New Location
+
+  🕒 Last Used
+    D:\Projects
+
+────────────────────
+
+  D:\Projects
+  D:\Learning
+  E:\Github
+  F:\College
+```
+
+### Controls & Features:
+* **Arrow keys (↑ / ↓)**: Navigate options seamlessly
+* **Enter**: Confirm selection
+* **Esc**: Cancel selection and return to the repository prompt
+* **Automatic history menu**: Displays all previously saved clone locations without duplicates
+* **Previous locations**: Instantly select your last used directory (`🕒 Last Used`) or any item from history without confirmation
+
+---
+
 ## 🧠 Memory System
 
 The project automatically creates a `memory.json` file the first time you run it.
-
-Pressing **ENTER** at the destination prompt automatically uses the last location stored in `memory.json`.
 
 Example `memory.json`:
 
@@ -97,7 +142,9 @@ Example `memory.json`:
     "last_location": "D:\\Projects",
     "locations": [
         "D:\\Projects",
-        "E:\\Learning"
+        "D:\\Learning",
+        "E:\\Github",
+        "F:\\College"
     ],
     "repositories": [
         "https://github.com/facebook/react.git",
@@ -108,39 +155,9 @@ Example `memory.json`:
 
 The script remembers:
 
-* Your last clone location
-* Every unique location you've used
-* Every repository you've cloned
-
----
-
-## 💡 Examples
-
-### Automatic Previous Location Reuse
-
-```text
-Destination Folder
-(Leave blank to use previous location)
->
-
-Using previous location:
-D:\Projects
-```
-
-### Folder Creation (One Level)
-
-```text
-Destination Folder
-(Leave blank to use previous location)
-> D:\Projects\Python
-
-Folder does not exist.
-
-Would you like to create it?
-(Y/N): Y
-
-Folder created successfully.
-```
+* Your last clone location (`last_location`)
+* Every unique location you've used (`locations`)
+* Every repository you've cloned (`repositories`)
 
 ---
 
@@ -189,7 +206,6 @@ After typing the same destination folder for the 18th time...
 * ⭐ Search previous repositories
 * ⭐ Open cloned project in VS Code
 * ⭐ Clone statistics
-* ⭐ Interactive terminal menu
 * ⭐ GUI version
 
 ---
