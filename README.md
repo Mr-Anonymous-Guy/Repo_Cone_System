@@ -4,7 +4,7 @@
 
 [![PyPI Version](https://img.shields.io/pypi/v/repo-clone-system.svg)](https://pypi.org/project/repo-clone-system/)
 [![Python Versions](https://img.shields.io/pypi/pyversions/repo-clone-system.svg)](https://pypi.org/project/repo-clone-system/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/Mr-Anonymous-Guy/Repo_Cone_System/blob/main/LICENSE)
 [![CI Tests](https://github.com/Mr-Anonymous-Guy/Repo_Cone_System/actions/workflows/tests.yml/badge.svg)](https://github.com/Mr-Anonymous-Guy/Repo_Cone_System/actions)
 [![Downloads](https://pepy.tech/badge/repo-clone-system)](https://pepy.tech/project/repo-clone-system)
 
@@ -16,7 +16,7 @@
 
 ```text
 ╭──────────────────────────────────────────────────────────────╮
-│ Repo_Clone_System v0.3.0                                     │
+│ Repo_Clone_System v0.3.1                                     │
 │ Type "help" to list commands or enter a GitHub URL.          │
 │ Press Ctrl+C anytime to exit safely.                         │
 ╰──────────────────────────────────────────────────────────────╯
@@ -267,7 +267,7 @@ Releases are published to [PyPI](https://pypi.org/project/repo-clone-system/) au
 
 ## 🤝 Contributing
 
-Contributions are welcome! Please read [CONTRIBUTING.md](CONTRIBUTING.md) and our [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) before submitting a pull request.
+Contributions are welcome! Please read [CONTRIBUTING.md](https://github.com/Mr-Anonymous-Guy/Repo_Cone_System/blob/main/CONTRIBUTING.md) and our [CODE_OF_CONDUCT.md](https://github.com/Mr-Anonymous-Guy/Repo_Cone_System/blob/main/CODE_OF_CONDUCT.md) before submitting a pull request.
 
 ```bash
 git clone https://github.com/Mr-Anonymous-Guy/Repo_Cone_System.git
@@ -280,4 +280,4 @@ python scripts/dev.py
 
 ## 📜 License
 
-Distributed under the [MIT License](LICENSE).
+Distributed under the [MIT License](https://github.com/Mr-Anonymous-Guy/Repo_Cone_System/blob/main/LICENSE).

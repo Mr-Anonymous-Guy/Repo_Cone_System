@@ -5,7 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [3.0.0] - 2026-08-05
+## [0.3.1] - 2026-08-08
+
+### Added
+- **Complete PyPI Package Metadata**: Extended `pyproject.toml` with PEP 621 compliant package metadata including concise project summary description, author details (`Mr. Anonymous`), license specification (`MIT`), PyPI keywords, classifiers, and project URLs (`Homepage`, `Repository`, `Issues`, `Documentation`, `Changelog`).
+- **PyPI & Package Documentation**: Added `docs/PYPI_METADATA.md`, `docs/IMPLEMENTATION_VERIFICATION.md`, `docs/FEATURE_TRACEABILITY.md`, and updated `BUILD.md` checklist.
+
+### Changed
+- Standardized project version to `0.3.1` across package metadata (`pyproject.toml`), source code (`src/repo_clone_system/__init__.py`), terminal banner (`README.md`), and documentation (`docs/index.md`).
+- Converted relative Markdown links in `README.md` (`LICENSE`, `CONTRIBUTING.md`, `CODE_OF_CONDUCT.md`) to absolute GitHub repository URLs to guarantee correct PyPI package rendering.
+
+## [0.3.0] - 2026-08-05
 
 ### Added
 - **Git-Style Shell Interface**: Shell-first startup experience (`repo`) featuring a clean header banner, persistent prompt session, command history (`.repo_history`), and `WordCompleter` auto-completion.
